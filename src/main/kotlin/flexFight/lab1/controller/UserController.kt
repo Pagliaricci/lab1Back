@@ -20,7 +20,12 @@ class UserController(private val service: UserService) {
 
     @PostMapping("/login")
     fun login(@RequestBody loginUser: LoginUser): String {
-        return "Hello, ${loginUser.username}!"
+        try {
+            service.login(loginUser)
+            return "Login successful"
+        }catch (e: Exception) {
+            return e.message.toString()
+        }
     }
 
     @PostMapping("/register")
