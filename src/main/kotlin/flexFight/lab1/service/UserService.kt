@@ -5,12 +5,16 @@ import flexFight.lab1.entity.LoginUser
 import flexFight.lab1.entity.UpdateUser
 import flexFight.lab1.entity.User
 import flexFight.lab1.repository.UserRepository
+import org.slf4j.LoggerFactory
+
 import org.springframework.stereotype.Service
 
 @Service
 class UserService(private val userRepository: UserRepository) {
+    private val logger: org.slf4j.Logger? = LoggerFactory.getLogger(UserService::class.java)
 
     fun createUser(createUser: CreateUser): User {
+        logger?.info("Creating user with username: ${createUser.username}")
         checkIfUserExists(createUser)
         checkCreateInputValid(createUser)
         val user = User(createUser)
@@ -18,15 +22,23 @@ class UserService(private val userRepository: UserRepository) {
     }
 
     private fun checkCreateInputValid(createUser: CreateUser) {
-        if (createUser.username.length < 3 || createUser.password.length < 5 || createUser.email.contains("@")
-                .not() || createUser.email.contains(".").not() || createUser.email.length < 5
+        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$".toRegex()
+        if (createUser.username.length < 3 ||
+            createUser.password.length < 5 ||
+            createUser.email.matches(emailRegex).not() ||
+            createUser.role !in listOf("User", "Trainer") ||
+            createUser.weight.toDoubleOrNull() == null || createUser.weight.toDouble() <= 0 ||
+            createUser.height.toDoubleOrNull() == null || createUser.height.toDouble() <= 0 ||
+            createUser.dateOfBirth.matches("^\\d{4}-\\d{2}-\\d{2}$".toRegex()).not() ||
+            createUser.gender !in listOf("Male", "Female")
         ) {
             throw Exception("Invalid input")
         }
     }
 
+
     private fun checkIfUserExists(createUser: CreateUser) {
-        if (userRepository.findByUsernameAndPassword(createUser.username, createUser.password) != null) {
+        if (userRepository.findByUsername(createUser.username) != null) {
             throw Exception("User already exists")
         }
     }
