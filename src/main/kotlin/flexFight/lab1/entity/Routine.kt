@@ -4,18 +4,18 @@ import flexFight.lab1.repository.ExerciseRepository
 import jakarta.persistence.*
 import java.util.*
 
-data class CreateWorkout(
+data class CreateRoutine(
     val name: String,
     val duration: Int,
     val intensity: String,
     val price: String,
     val creator: String,
-    val exercises: List<WorkoutExerciseDTO>
+    val exercises: List<RoutineExerciseDTO>
 )
 
 
 @Entity
-data class Workout(
+data class Routine(
     @Id
     val id: String = UUID.randomUUID().toString(),
     val name: String,
@@ -24,25 +24,25 @@ data class Workout(
     val price: String,
     val creator: String,
 
-    @OneToMany(mappedBy = "workout", cascade = [CascadeType.ALL], orphanRemoval = true)
-     val exercises: MutableList<WorkoutExercise> = mutableListOf(),
+    @OneToMany(mappedBy = "routine", cascade = [CascadeType.ALL], orphanRemoval = true)
+     val exercises: MutableList<RoutineExercise> = mutableListOf(),
 
     var isActive: Boolean = false,
 ) {
-    constructor(createWorkout: CreateWorkout, exerciseRepository: ExerciseRepository) : this(
-        name = createWorkout.name,
-        duration = createWorkout.duration,
-        intensity = createWorkout.intensity,
-        price = createWorkout.price,
-        creator = createWorkout.creator
+    constructor(createRoutine: CreateRoutine, exerciseRepository: ExerciseRepository) : this(
+        name = createRoutine.name,
+        duration = createRoutine.duration,
+        intensity = createRoutine.intensity,
+        price = createRoutine.price,
+        creator = createRoutine.creator
     ) {
         this.exercises.addAll(
-            createWorkout.exercises.map { dto ->
+            createRoutine.exercises.map { dto ->
                 val exercise = exerciseRepository.findById(dto.exerciseId.toString())
                     .orElseThrow { IllegalArgumentException("Exercise with ID ${dto.exerciseId} not found") }
-                WorkoutExercise(
+                RoutineExercise(
                     exercise = exercise,
-                    workout = this,
+                    routine = this,
                     sets = dto.sets.toString(),
                     reps = dto.reps.toString(),
                     day = dto.day
@@ -53,20 +53,20 @@ data class Workout(
 }
 
 @Entity
-data class WorkoutExercise(
+data class RoutineExercise(
     @Id val id: String = UUID.randomUUID().toString(),
     @ManyToOne
     @JoinColumn(name = "exercise_id", referencedColumnName = "id")
     val exercise: Exercise,
     @ManyToOne
-    @JoinColumn(name = "workout_id", referencedColumnName = "id")
-    val workout: Workout,
+    @JoinColumn(name = "routine_id", referencedColumnName = "id")
+    val routine: Routine,
     val sets: String,
     val reps: String,
     val day: Int,
 )
 
-data class WorkoutExerciseDTO(
+data class RoutineExerciseDTO(
     val exerciseId: Long,
     val sets: Int,
     val reps: Int,
