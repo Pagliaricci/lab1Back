@@ -8,6 +8,7 @@ import java.util.*
 data class Exercise (
     @Id val id: String = UUID.randomUUID().toString(),
     val name: String,
+    val category: String,
     val description: String
 )
 

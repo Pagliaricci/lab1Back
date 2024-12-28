@@ -12,4 +12,14 @@ class ExerciseService(
     fun createExercise(exercise: Exercise): Exercise {
         return exerciseRepository.save(exercise)
     }
+    fun getExercises(): List<Exercise> {
+        return exerciseRepository.findAll()
+    }
+    fun searchExercises(search: String): List<Exercise> {
+        return exerciseRepository.findByNameContainingIgnoreCase(search) // Search by name (case-insensitive)
+    }
+    fun getExercisesByCategory(category: String): List<Exercise> {
+        return exerciseRepository.findByCategory(category)
+    }
 }
+

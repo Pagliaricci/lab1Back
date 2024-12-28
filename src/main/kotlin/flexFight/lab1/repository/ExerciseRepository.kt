@@ -5,4 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface ExerciseRepository : JpaRepository<Exercise, String>
+interface ExerciseRepository : JpaRepository<Exercise, String>{
+    fun findByNameContainingIgnoreCase(search: String): List<Exercise>
+    fun findByCategory(category: String): List<Exercise> // New method
+
+}

@@ -11,9 +11,22 @@ class ExerciseController(
     private val exerciseService: ExerciseService
 ) {
 
-    @PostMapping
+    @PostMapping("/create")
     fun createExercise(@RequestBody exercise: Exercise): ResponseEntity<Exercise> {
         val savedExercise = exerciseService.createExercise(exercise)
         return ResponseEntity.ok(savedExercise)
+    }
+
+    @GetMapping
+    fun getExercises(
+        @RequestParam(required = false) search: String?,
+        @RequestParam(required = false) category: String? // New parameter for filtering by category
+    ): ResponseEntity<List<Exercise>> {
+        val exercises = when {
+            !category.isNullOrEmpty() -> exerciseService.getExercisesByCategory(category)
+            !search.isNullOrEmpty() -> exerciseService.searchExercises(search)
+            else -> exerciseService.getExercises()
+        }
+        return ResponseEntity.ok(exercises)
     }
 }
