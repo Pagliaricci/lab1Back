@@ -10,9 +10,8 @@ data class CreateRoutine(
     val intensity: String,
     val price: String,
     val creator: String,
-    val exercises: List<RoutineExerciseDTO>
+    val exercises: List<RoutineExerciseDTO>  // DTO for exercise input
 )
-
 
 @Entity
 data class Routine(
@@ -24,10 +23,8 @@ data class Routine(
     val price: String,
     val creator: String,
 
-    @OneToMany(mappedBy = "routine", cascade = [CascadeType.ALL], orphanRemoval = true)
-     val exercises: MutableList<RoutineExercise> = mutableListOf(),
-
-    var isActive: Boolean = false,
+    // Removed exercises list here to prevent redundancy
+    var isActive: Boolean = false
 ) {
     constructor(createRoutine: CreateRoutine, exerciseRepository: ExerciseRepository) : this(
         name = createRoutine.name,
@@ -36,19 +33,19 @@ data class Routine(
         price = createRoutine.price,
         creator = createRoutine.creator
     ) {
-        this.exercises.addAll(
-            createRoutine.exercises.map { dto ->
-                val exercise = exerciseRepository.findById(dto.exerciseId.toString())
-                    .orElseThrow { IllegalArgumentException("Exercise with ID ${dto.exerciseId} not found") }
-                RoutineExercise(
-                    exercise = exercise,
-                    routine = this,
-                    sets = dto.sets.toString(),
-                    reps = dto.reps.toString(),
-                    day = dto.day
-                )
-            }
-        )
+        // You can use this to populate RoutineExercise entities directly into the RoutineExercise table
+        createRoutine.exercises.forEach { dto ->
+            val exercise = exerciseRepository.findById(dto.exerciseId)
+                .orElseThrow { IllegalArgumentException("Exercise with ID ${dto.exerciseId} not found") }
+            val routineExercise = RoutineExercise(
+                exercise = exercise,
+                routine = this, // this refers to the current Routine entity
+                sets = dto.sets.toString(),
+                reps = dto.reps.toString(),
+                day = dto.day
+            )
+            // Save RoutineExercise immediately if needed or manage it separately
+        }
     }
 }
 
@@ -67,7 +64,7 @@ data class RoutineExercise(
 )
 
 data class RoutineExerciseDTO(
-    val exerciseId: Long,
+    val exerciseId: String,
     val sets: Int,
     val reps: Int,
     val day: Int
