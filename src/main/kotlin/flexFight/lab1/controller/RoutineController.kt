@@ -24,4 +24,19 @@ fun createRoutine(@RequestBody createRoutine: CreateRoutine): ResponseEntity<Str
         val routines = routineService.getRoutineExercises(routineId)
         return ResponseEntity.ok(routines)
     }
+
+    @GetMapping("/get")
+    fun getRoutines(@RequestParam userID: String): ResponseEntity<List<Routine>> {
+        println("Getting routines for user $userID")
+        val routines = routineService.getRoutines(userID)
+        println("Routines: $routines")
+        return ResponseEntity.ok(routines)
+    }
+
+    @GetMapping("/routineExercises")
+    fun getRoutineExercises(@RequestParam routineId: String): ResponseEntity<List<RoutineExercise>> {
+        val routineExercises = routineService.getRoutineExercises(routineId)
+        return ResponseEntity.ok(routineExercises)
+    }
 }
+

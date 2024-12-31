@@ -77,4 +77,8 @@ class UserService(private val userRepository: UserRepository) {
         return userRepository.findByUsernameAndPassword(loginUser.username, loginUser.password)
             ?: throw Exception("User not found")
     }
+
+    fun getUserByUsername(username: String): User? {
+        return userRepository.findByUsername(username)
+    }
 }

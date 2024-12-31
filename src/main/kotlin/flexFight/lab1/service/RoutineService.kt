@@ -45,4 +45,8 @@ class RoutineService(
     fun getRoutineExercises(routineId: String): List<RoutineExercise> {
         return routineExerciseRepository.findByRoutineId(routineId)
     }
+
+    fun getRoutines(userID: String): List<Routine> {
+        return routineRepository.findByCreator(userID)
+    }
 }

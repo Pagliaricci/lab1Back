@@ -20,7 +20,7 @@ class ExerciseController(
     @GetMapping
     fun getExercises(
         @RequestParam(required = false) search: String?,
-        @RequestParam(required = false) category: String? // New parameter for filtering by category
+        @RequestParam(required = false) category: String?
     ): ResponseEntity<List<Exercise>> {
         val exercises = when {
             !category.isNullOrEmpty() -> exerciseService.getExercisesByCategory(category)
