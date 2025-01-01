@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface RoutineRepository : JpaRepository<Routine, String>{
-    fun findByCreator(userId: String): List<Routine>
+    fun findByCreatorOrderByCreatedAtDesc(userId: String): List<Routine>
+    fun findByCreatorAndIsActive(userId: String, isActive: Boolean): Routine?
 }

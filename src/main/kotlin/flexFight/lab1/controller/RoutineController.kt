@@ -1,8 +1,6 @@
 package flexFight.lab1.controller
 
-import flexFight.lab1.entity.CreateRoutine
-import flexFight.lab1.entity.Routine
-import flexFight.lab1.entity.RoutineExercise
+import flexFight.lab1.entity.*
 import flexFight.lab1.service.RoutineService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -27,9 +25,7 @@ fun createRoutine(@RequestBody createRoutine: CreateRoutine): ResponseEntity<Str
 
     @GetMapping("/get")
     fun getRoutines(@RequestParam userID: String): ResponseEntity<List<Routine>> {
-        println("Getting routines for user $userID")
         val routines = routineService.getRoutines(userID)
-        println("Routines: $routines")
         return ResponseEntity.ok(routines)
     }
 
@@ -37,6 +33,29 @@ fun createRoutine(@RequestBody createRoutine: CreateRoutine): ResponseEntity<Str
     fun getRoutineExercises(@RequestParam routineId: String): ResponseEntity<List<RoutineExercise>> {
         val routineExercises = routineService.getRoutineExercises(routineId)
         return ResponseEntity.ok(routineExercises)
+    }
+
+    @PostMapping("/activateRoutine")
+    fun activateRoutine(@RequestBody activateRoutine: ActivateRoutine): ResponseEntity<String> {
+        routineService.deactivateUserRoutines(activateRoutine.userId)
+        routineService.activateRoutine(activateRoutine.routineId)
+        return ResponseEntity.ok("Routine activated")
+    }
+    @PostMapping("/deactivate/{routineId}")
+    fun deactivateRoutine(@PathVariable routineId: String) {
+        routineService.deactivateRoutine(routineId)
+    }
+
+    @GetMapping("/getActive")
+    fun getActiveRoutine(@RequestParam userId: String): ResponseEntity<FullRoutine?> {
+        val routine = routineService.getActiveRoutine(userId)
+        return ResponseEntity.ok(routine)
+    }
+
+    @DeleteMapping("/{id}")
+    fun deleteRoutine(@PathVariable id: String): ResponseEntity<String> {
+        routineService.deleteRoutineById(id)
+        return ResponseEntity.ok("Routine deleted successfully")
     }
 }
 

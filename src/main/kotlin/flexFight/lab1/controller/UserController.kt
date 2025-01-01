@@ -33,7 +33,7 @@ class UserController(private val service: UserService) {
             val cookie = Cookie("SESSION", sessionToken).apply {
                 isHttpOnly = true
                 path = "/"
-                maxAge = 7 * 24 * 60 * 60 // 7 days
+                maxAge = 24 * 60 * 60 // 1day p
             }
             response.addCookie(cookie)
 

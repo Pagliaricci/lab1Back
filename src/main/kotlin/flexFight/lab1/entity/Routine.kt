@@ -2,6 +2,7 @@ package flexFight.lab1.entity
 
 import flexFight.lab1.repository.ExerciseRepository
 import jakarta.persistence.*
+import org.hibernate.annotations.CreationTimestamp
 import java.util.*
 
 data class CreateRoutine(
@@ -23,7 +24,10 @@ data class Routine(
     val price: String,
     val creator: String,
 
-    // Removed exercises list here to prevent redundancy
+    @CreationTimestamp
+    @Column(updatable = false)
+    val createdAt: Date = Date(),
+
     var isActive: Boolean = false
 ) {
     constructor(createRoutine: CreateRoutine, exerciseRepository: ExerciseRepository) : this(
@@ -67,5 +71,34 @@ data class RoutineExerciseDTO(
     val exerciseId: String,
     val sets: Int,
     val reps: Int,
+    val day: Int
+)
+
+data class ActivateRoutine(
+    val routineId: String,
+    val userId: String
+)
+
+data class FullRoutine(
+    val id: String ,
+    val name: String,
+    val duration: Int,
+    val intensity: String,
+    val price: String,
+    val creator: String,
+    val createdAt: Date,
+    var isActive: Boolean,
+    val exercises: List<FullRoutineExercise>
+)
+
+
+data class FullRoutineExercise(
+    val name: String,
+    val description: String,
+    val category: String,
+    val id: String,
+    val routine: Routine,
+    val sets: String,
+    val reps: String,
     val day: Int
 )

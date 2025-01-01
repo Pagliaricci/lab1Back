@@ -1,8 +1,6 @@
 package flexFight.lab1.service
 
-import flexFight.lab1.entity.CreateRoutine
-import flexFight.lab1.entity.Routine
-import flexFight.lab1.entity.RoutineExercise
+import flexFight.lab1.entity.*
 import flexFight.lab1.repository.ExerciseRepository
 import flexFight.lab1.repository.RoutineExerciseRepository
 import flexFight.lab1.repository.RoutineRepository
@@ -47,6 +45,62 @@ class RoutineService(
     }
 
     fun getRoutines(userID: String): List<Routine> {
-        return routineRepository.findByCreator(userID)
+        return routineRepository.findByCreatorOrderByCreatedAtDesc(userID)
+    }
+    fun activateRoutine(routineId: String) {
+        val routine = routineRepository.findById(routineId)
+            .orElseThrow { IllegalArgumentException("Routine with ID $routineId not found") }
+        routine.isActive = true
+        routineRepository.saveAndFlush(routine)
+    }
+    fun deactivateUserRoutines(userID: String) {
+        val routines = routineRepository.findByCreatorOrderByCreatedAtDesc(userID)
+        routines.forEach { routine ->
+            routine.isActive = false
+            routineRepository.saveAndFlush(routine)
+        }
+    }
+    fun getActiveRoutine(userId: String): FullRoutine? {
+        val routine = routineRepository.findByCreatorAndIsActive(userId, true)
+        if (routine!= null){
+            val routineExercises = routineExerciseRepository.findByRoutineId(routine.id)
+            val fullRoutineExercises = routineExercises.map { routineExercise ->
+                FullRoutineExercise(
+                    name = routineExercise.exercise.name,
+                    description = routineExercise.exercise.description,
+                    category = routineExercise.exercise.category,
+                    routine = routineExercise.routine,
+                    id = routineExercise.id,
+                    sets = routineExercise.sets,
+                    reps = routineExercise.reps,
+                    day = routineExercise.day
+                )
+            }
+            val fullRoutine = FullRoutine(
+                id = routine.id,
+                name = routine.name,
+                duration = routine.duration,
+                intensity = routine.intensity,
+                price = routine.price,
+                creator = routine.creator,
+                isActive = routine.isActive,
+                createdAt = routine.createdAt,
+                exercises = fullRoutineExercises
+            )
+            return fullRoutine
+        }
+        return null
+    }
+    @Transactional
+    fun deleteRoutineById(id: String) {
+        routineExerciseRepository.deleteAllByRoutineId(id)
+        routineRepository.deleteById(id)
+    }
+    fun deactivateRoutine(routineId: String) {
+        println("Deactivating routine with ID $routineId")
+        val routine = routineRepository.findById(routineId)
+            .orElseThrow { IllegalArgumentException("Routine with ID $routineId not found") }
+        routine.isActive = false
+        routineRepository.saveAndFlush(routine)
     }
 }

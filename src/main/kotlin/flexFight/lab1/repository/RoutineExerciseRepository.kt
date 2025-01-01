@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface RoutineExerciseRepository: JpaRepository<RoutineExercise,String> {
     fun findByRoutineId(routineId: String): List<RoutineExercise>
+    fun deleteAllByRoutineId(routineId: String)
 }
