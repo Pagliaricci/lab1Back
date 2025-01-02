@@ -7,11 +7,13 @@ import flexFight.lab1.repository.RoutineRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
+
 @Service
 class RoutineService(
     private val routineRepository: RoutineRepository,
     private val exerciseRepository: ExerciseRepository,
-    private val routineExerciseRepository: RoutineExerciseRepository // New repository for RoutineExercise
+    private val routineExerciseRepository: RoutineExerciseRepository,
+    private val progressService: ProgressService
 ) {
 
     @Transactional
@@ -96,11 +98,13 @@ class RoutineService(
         routineExerciseRepository.deleteAllByRoutineId(id)
         routineRepository.deleteById(id)
     }
-    fun deactivateRoutine(routineId: String) {
-        println("Deactivating routine with ID $routineId")
-        val routine = routineRepository.findById(routineId)
-            .orElseThrow { IllegalArgumentException("Routine with ID $routineId not found") }
+    fun deactivateRoutine(deactivateRoutine: DeactivateRoutine) {
+        progressService.deleteRoutineProgress(deactivateRoutine.userId, deactivateRoutine.routineId)
+        progressService.deleteExerciseProgress(deactivateRoutine.userId, deactivateRoutine.routineId)
+        val routine = routineRepository.findById(deactivateRoutine.routineId)
+            .orElseThrow { IllegalArgumentException("Routine with ID ${deactivateRoutine.routineId} not found") }
         routine.isActive = false
         routineRepository.saveAndFlush(routine)
     }
+
 }

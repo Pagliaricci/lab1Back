@@ -12,9 +12,9 @@ data class HistoryExercise(
     val exerciseId: String,
     val routineId: String,
     val userId: String,
-    val weight: String,
-    val reps: String,
-    val sets: String,
+    val weight: Int,
+    val reps: Int,
+    val sets: Int,
     val date: Date = Date()
 )
 
@@ -25,16 +25,31 @@ data class RoutineProgress(
     val userId: String,
     val routineId: String,
     var day : Int,
-    var amountOfExercisesDone: Int
+    var amountOfExercisesDone: Int,
+    val initiationDate: Date = Date()
+)
+
+@Entity
+data class ExerciseProgress(
+    @Id
+    val id: String = UUID.randomUUID().toString(),
+    val userId: String,
+    val routineId: String,
+    val routineExerciseId: String,
+    var sets: Int,
+    var reps: Int,
+    val day: Int,
+    var isDone: Boolean = false,
+    val date: Date
 )
 
 data class AddRecord(
     val exerciseId: String,
     val routineId: String,
     val userId: String,
-    val weight: String,
-    val reps: String,
-    val sets: String
+    val weight: Int,
+    val reps: Int,
+    val sets: Int
 )
 
 data class StartRoutine(
@@ -54,4 +69,33 @@ data class UpdateProgress(
     val routineId: String,
     var day : Int,
     var amountOfExercisesDone: Int
+)
+
+data class CompleteExercise(
+    val routineId: String,
+    val userId: String,
+    val routineExerciseId: String,
+    val sets : Int,
+    val reps : Int,
+    val weight: Int,
+    val day: Int,
+)
+
+data class GetExerciseProgress(
+    val routineId: String,
+    val userId: String
+)
+
+data class FullExerciseProgress(
+    val routineExerciseId: String,
+    val name : String,
+    val category: String,
+    val description: String,
+    val userId: String,
+    val routineId: String,
+    val sets: Int,
+    val reps: Int,
+    val day: Int,
+    val isDone: Boolean,
+    val date: Date
 )

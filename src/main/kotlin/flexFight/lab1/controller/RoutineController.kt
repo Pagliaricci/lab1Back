@@ -41,9 +41,9 @@ fun createRoutine(@RequestBody createRoutine: CreateRoutine): ResponseEntity<Str
         routineService.activateRoutine(activateRoutine.routineId)
         return ResponseEntity.ok("Routine activated")
     }
-    @PostMapping("/deactivate/{routineId}")
-    fun deactivateRoutine(@PathVariable routineId: String): ResponseEntity<String> {
-        routineService.deactivateRoutine(routineId)
+    @PostMapping("/deactivate")
+    fun deactivateRoutine(@RequestBody deactivateRoutine: DeactivateRoutine): ResponseEntity<String> {
+        routineService.deactivateRoutine(deactivateRoutine)
         return ResponseEntity.ok("Routine deactivated successfully")
     }
 

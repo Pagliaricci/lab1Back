@@ -102,3 +102,14 @@ data class FullRoutineExercise(
     val reps: String,
     val day: Int
 )
+
+data class DeactivateRoutine(
+    val routineId: String,
+    val userId: String
+)
+
+data class GetExerciseHistory(
+    val userId: String,
+    val routineId: String,
+    val routineExerciseId: String
+)

@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface HistoryExerciseRepository: JpaRepository<HistoryExercise, String> {
+    fun findByUserIdAndExerciseIdAndRoutineId(userId: String, exerciseId: String, routineId: String): HistoryExercise?
 }
