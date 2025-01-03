@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/routines")
 class RoutineController(
-    private val routineService: RoutineService
+    private val routineService: RoutineService,
 ) {
 
 @PostMapping("/create")

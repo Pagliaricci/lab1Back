@@ -99,3 +99,19 @@ data class FullExerciseProgress(
     val isDone: Boolean,
     val date: Date
 )
+
+data class FullHistoryExercise(
+    val exerciseName : String,
+    val routineName : String,
+    val weight: Int,
+    val reps: Int,
+    val sets: Int,
+    val date: Date
+)
+
+
+data class UpdateProgressDate(
+    val userId: String,
+    val routineId: String,
+    val date: Date
+)

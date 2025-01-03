@@ -1,16 +1,20 @@
 package flexFight.lab1.controller
 
 import flexFight.lab1.entity.*
+import flexFight.lab1.service.HistoryExerciseService
 import flexFight.lab1.service.ProgressService
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/progress")
-class ProgressController(private val progressService: ProgressService) {
+class ProgressController(private val progressService: ProgressService,private val historyExerciseService: HistoryExerciseService
+) {
 
     @PostMapping("/start-routine")
     fun startRoutine(@RequestBody startRoutine: StartRoutine): ResponseEntity<String> {
@@ -51,4 +55,17 @@ class ProgressController(private val progressService: ProgressService) {
         val response = progressService.getExerciseHistory(getExerciseHistory)
         return ResponseEntity.ok(response)
     }
+
+    @GetMapping("/get-user-history")
+    fun getUserHistory(@RequestHeader userId: String): ResponseEntity<List<FullHistoryExercise>> {
+        val response = historyExerciseService.getUserHistory(userId)
+        return ResponseEntity.ok(response)
+    }
+
+    @PostMapping("/update-progress-day")
+    fun updateProgressDay(@RequestBody updateProgress: UpdateProgressDate): ResponseEntity<String> {
+        val response = progressService.updateProgressDay(updateProgress)
+        return ResponseEntity.ok(response)
+    }
+
 }

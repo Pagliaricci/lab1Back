@@ -161,4 +161,20 @@ class ProgressService(private val progressRepository: ProgressRepository, privat
                 throw Exception("Error: ${e.message}")
             }
         }
+
+fun updateProgressDay(updateProgressDate: UpdateProgressDate): String {
+    try {
+        val progress = progressRepository.findByUserIdAndRoutineId(updateProgressDate.userId, updateProgressDate.routineId)
+        if (progress != null) {
+            val daysDifference = java.time.temporal.ChronoUnit.DAYS.between(progress.initiationDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), updateProgressDate.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
+            progress.day += daysDifference.toInt()
+            progressRepository.saveAndFlush(progress)
+            return "Progress day updated successfully"
+        } else {
+            return "Error: Progress not found"
+        }
+    } catch (e: Exception) {
+        return "Error: ${e.message}"
+    }
+}
 }
