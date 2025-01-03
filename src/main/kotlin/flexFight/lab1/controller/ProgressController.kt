@@ -24,7 +24,6 @@ class ProgressController(private val progressService: ProgressService,private va
 
     @PostMapping("/get-routine-progress")
     fun getRoutineProgress(@RequestBody getProgress: GetProgress): ResponseEntity<RoutineProgress?> {
-        println("getRoutineProgress called with ${getProgress.userId} and ${getProgress.routineId}")
         val response = progressService.getRoutineProgress(getProgress)
         return if (response != null) {
             ResponseEntity.ok(response)
@@ -63,7 +62,8 @@ class ProgressController(private val progressService: ProgressService,private va
     }
 
     @PostMapping("/update-progress-day")
-    fun updateProgressDay(@RequestBody updateProgress: UpdateProgressDate): ResponseEntity<String> {
+    fun updateProgressDay(@RequestBody updateProgress: UpdateProgressDate): ResponseEntity<RoutineProgress?> {
+        println("llegue a updateProgressDay con ${updateProgress.userId} ${updateProgress.routineId} ${updateProgress.date}")
         val response = progressService.updateProgressDay(updateProgress)
         return ResponseEntity.ok(response)
     }

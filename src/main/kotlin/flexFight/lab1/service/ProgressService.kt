@@ -137,7 +137,6 @@ class ProgressService(private val progressRepository: ProgressRepository, privat
 
     fun deleteRoutineProgress(userId: String, routineId: String): String {
         try {
-            println("Deleting routine progress with userId: $userId and routineId: $routineId")
             progressRepository.deleteByUserIdAndRoutineId(userId, routineId)
             return "Routine progress deleted successfully"
         } catch (e: Exception) {
@@ -162,19 +161,19 @@ class ProgressService(private val progressRepository: ProgressRepository, privat
             }
         }
 
-fun updateProgressDay(updateProgressDate: UpdateProgressDate): String {
+fun updateProgressDay(updateProgressDate: UpdateProgressDate): RoutineProgress? {
     try {
         val progress = progressRepository.findByUserIdAndRoutineId(updateProgressDate.userId, updateProgressDate.routineId)
         if (progress != null) {
             val daysDifference = java.time.temporal.ChronoUnit.DAYS.between(progress.initiationDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), updateProgressDate.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
             progress.day += daysDifference.toInt()
             progressRepository.saveAndFlush(progress)
-            return "Progress day updated successfully"
+            return progress
         } else {
-            return "Error: Progress not found"
+            return null
         }
     } catch (e: Exception) {
-        return "Error: ${e.message}"
+        return null
     }
 }
 }
