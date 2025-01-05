@@ -10,8 +10,9 @@ data class RM(
     val id: String = UUID.randomUUID().toString(),
     val userId: String,
     val exerciseId: String,
-    var rm: Double,
-    val date: Date
+    var rm: Double = 0.0,
+    var date: Date = Date(),
+    var objective: Double = 0.0
 )
 
 data class SetRM(
@@ -20,4 +21,10 @@ data class SetRM(
     val reps: Int,
     val weight: Double,
     val date: Date
+)
+
+data class RMObjective(
+    val userId: String,
+    val exerciseId: String,
+    val objective: Double
 )

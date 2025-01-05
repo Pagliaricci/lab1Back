@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface RMRepository: JpaRepository<RM,String> {
     fun findFirstByUserIdAndExerciseIdOrderByDateDesc(userId: String, exerciseId: String): RM?
+    fun findAllByUserIdAndExerciseIdOrderByDateAsc(userId: String, exerciseId: String): List<RM>
 }
