@@ -26,7 +26,8 @@ data class RoutineProgress(
     val routineId: String,
     var day : Int,
     var amountOfExercisesDone: Int,
-    val initiationDate: Date = Date()
+    val initiationDate: Date = Date(),
+    var lastUpdated: Date = Date()
 )
 
 @Entity

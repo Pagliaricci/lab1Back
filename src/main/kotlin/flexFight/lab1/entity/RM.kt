@@ -10,7 +10,7 @@ data class RM(
     val id: String = UUID.randomUUID().toString(),
     val userId: String,
     val exerciseId: String,
-    var reps: Int,
+    var rm: Double,
     val date: Date
 )
 
@@ -18,5 +18,6 @@ data class SetRM(
     val userId: String,
     val exerciseId: String,
     val reps: Int,
+    val weight: Double,
     val date: Date
 )

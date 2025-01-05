@@ -35,7 +35,7 @@ class ProgressService(private val progressRepository: ProgressRepository, privat
     private fun saveExerciseProgress(startRoutine: StartRoutine) {
         val exercises = routineExerciseRepository.findByRoutineId(startRoutine.routineId)
         exercises.forEach {
-            val exerciseProgress = flexFight.lab1.entity.ExerciseProgress(
+            val exerciseProgress = ExerciseProgress(
                 userId = startRoutine.userId,
                 routineId = startRoutine.routineId,
                 routineExerciseId = it.id,
@@ -165,8 +165,9 @@ fun updateProgressDay(updateProgressDate: UpdateProgressDate): RoutineProgress? 
     try {
         val progress = progressRepository.findByUserIdAndRoutineId(updateProgressDate.userId, updateProgressDate.routineId)
         if (progress != null) {
-            val daysDifference = java.time.temporal.ChronoUnit.DAYS.between(progress.initiationDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), updateProgressDate.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
+            val daysDifference = java.time.temporal.ChronoUnit.DAYS.between(progress.lastUpdated.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), updateProgressDate.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
             progress.day += daysDifference.toInt()
+            progress.lastUpdated = updateProgressDate.date
             progressRepository.saveAndFlush(progress)
             return progress
         } else {
