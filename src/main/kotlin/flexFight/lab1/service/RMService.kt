@@ -3,12 +3,15 @@ package flexFight.lab1.service
 import flexFight.lab1.entity.RM
 import flexFight.lab1.entity.RMObjective
 import flexFight.lab1.entity.SetRM
+import flexFight.lab1.entity.WeightHistory
 import flexFight.lab1.repository.RMRepository
+import flexFight.lab1.repository.UserRepository
+import flexFight.lab1.repository.weightHistoryRepository
 import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class RMService(private val rmRepository: RMRepository) {
+class RMService(private val rmRepository: RMRepository, private val weightHistoryRepository: weightHistoryRepository, private val userRepository: UserRepository) {
 
     fun setRM(rm: SetRM): Double {
         if (rm.reps <= 0) throw IllegalArgumentException("Reps must be greater than 0")
@@ -59,4 +62,38 @@ class RMService(private val rmRepository: RMRepository) {
         }
     }
 
+    fun setWeight(userId: String, weight: Double) {
+        val weightHistory = WeightHistory(userId = userId, weight = weight)
+        val user = userRepository.findById(userId).orElseThrow { IllegalArgumentException("User not found") }
+        user.weight = weight.toString()
+        weightHistoryRepository.save(weightHistory)
+    }
+
+
+    fun getWeightHistory(userId: String): List<WeightHistory> {
+        return weightHistoryRepository.findAllByUserIdOrderByDateAsc(userId)
+    }
+
+    fun setWeightObjective(userId: String, objective: Double) {
+        val weightHistory = weightHistoryRepository.findFirstByUserIdOrderByDateDesc(userId)
+        if (weightHistory != null) {
+            weightHistory.objective = objective
+            weightHistoryRepository.save(weightHistory)
+        } else {
+            val user = userRepository.findById(userId).orElseThrow { IllegalArgumentException("User not found") }
+            val newWeightHistory = WeightHistory(userId = userId, weight = user.weight.toDouble(), objective = objective)
+            weightHistoryRepository.save(newWeightHistory)
+        }
+    }
+
+    fun getCurrentWeight(userId: String): Double {
+        val user = userRepository.findById(userId).orElseThrow { IllegalArgumentException("User not found") }
+        println("User weight: ${user.weight}")
+        return user.weight.toDouble()
+    }
+
+    fun getWeightObjective(userId: String): Double {
+        val weightHistory = weightHistoryRepository.findFirstByUserIdOrderByDateDesc(userId)
+        return weightHistory?.objective ?: 0.0
+    }
 }

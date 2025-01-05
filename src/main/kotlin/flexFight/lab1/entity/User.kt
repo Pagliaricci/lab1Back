@@ -23,7 +23,7 @@ data class User (
     val email : String,
     val password: String,
     val role: String,
-    val weight: String,
+    var weight: String,
     val height: String,
     val dateOfBirth: String,
     val gender: String,

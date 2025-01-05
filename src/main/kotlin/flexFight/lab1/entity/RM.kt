@@ -28,3 +28,13 @@ data class RMObjective(
     val exerciseId: String,
     val objective: Double
 )
+
+@Entity
+data class WeightHistory(
+    @Id
+    val id: String = UUID.randomUUID().toString(),
+    val userId: String,
+    val weight: Double,
+    val date: Date = Date(),
+    var objective: Double = 0.0
+)
