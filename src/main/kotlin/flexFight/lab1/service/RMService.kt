@@ -1,9 +1,6 @@
 package flexFight.lab1.service
 
-import flexFight.lab1.entity.RM
-import flexFight.lab1.entity.RMObjective
-import flexFight.lab1.entity.SetRM
-import flexFight.lab1.entity.WeightHistory
+import flexFight.lab1.entity.*
 import flexFight.lab1.repository.RMRepository
 import flexFight.lab1.repository.UserRepository
 import flexFight.lab1.repository.weightHistoryRepository
@@ -63,10 +60,17 @@ class RMService(private val rmRepository: RMRepository, private val weightHistor
     }
 
     fun setWeight(userId: String, weight: Double) {
-        val weightHistory = WeightHistory(userId = userId, weight = weight)
+        val weightHistory = weightHistoryRepository.findFirstByUserIdOrderByDateDesc(userId)
+        if (weightHistory != null) {
+            val newWeightHistory = WeightHistory(userId = userId, weight = weight, objective = weightHistory.objective, isHigherObj = weightHistory.isHigherObj)
+            weightHistoryRepository.save(newWeightHistory)
+        } else {
+            val newWeightHistory = WeightHistory(userId = userId, weight = weight)
+            weightHistoryRepository.save(newWeightHistory)
+        }
         val user = userRepository.findById(userId).orElseThrow { IllegalArgumentException("User not found") }
         user.weight = weight.toString()
-        weightHistoryRepository.save(weightHistory)
+        userRepository.save(user)
     }
 
 
@@ -74,14 +78,15 @@ class RMService(private val rmRepository: RMRepository, private val weightHistor
         return weightHistoryRepository.findAllByUserIdOrderByDateAsc(userId)
     }
 
-    fun setWeightObjective(userId: String, objective: Double) {
+    fun setWeightObjective(userId: String, objective: Double, isHigherObj: Boolean) {
         val weightHistory = weightHistoryRepository.findFirstByUserIdOrderByDateDesc(userId)
         if (weightHistory != null) {
             weightHistory.objective = objective
+            weightHistory.isHigherObj = isHigherObj
             weightHistoryRepository.save(weightHistory)
         } else {
             val user = userRepository.findById(userId).orElseThrow { IllegalArgumentException("User not found") }
-            val newWeightHistory = WeightHistory(userId = userId, weight = user.weight.toDouble(), objective = objective)
+            val newWeightHistory = WeightHistory(userId = userId, weight = user.weight.toDouble(), objective = objective, isHigherObj = isHigherObj)
             weightHistoryRepository.save(newWeightHistory)
         }
     }
@@ -92,8 +97,8 @@ class RMService(private val rmRepository: RMRepository, private val weightHistor
         return user.weight.toDouble()
     }
 
-    fun getWeightObjective(userId: String): Double {
+    fun getWeightObjective(userId: String): Objective {
         val weightHistory = weightHistoryRepository.findFirstByUserIdOrderByDateDesc(userId)
-        return weightHistory?.objective ?: 0.0
+        return Objective(weightHistory?.objective ?: 0.0, weightHistory?.isHigherObj ?: false)
     }
 }

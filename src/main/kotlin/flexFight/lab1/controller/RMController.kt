@@ -1,9 +1,6 @@
 package flexFight.lab1.controller
 
-import flexFight.lab1.entity.RM
-import flexFight.lab1.entity.RMObjective
-import flexFight.lab1.entity.SetRM
-import flexFight.lab1.entity.WeightHistory
+import flexFight.lab1.entity.*
 import flexFight.lab1.service.RMService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -121,15 +118,15 @@ class RMController(private val rmService: RMService){
     fun setWeightObjective(@RequestBody request: Map<String, String>): ResponseEntity<String> {
         val userId = request["userId"]
         val objective = request["objective"]
-        println("Received setWeight request with: userId=$userId, weight=$objective")
+        val isHigherObj = request["isHigher"]
+        println("Received setWeight request with: userId=$userId, weight=$objective isHigher=$isHigherObj")
 
-        if (userId.isNullOrEmpty() || objective.isNullOrEmpty()) {
+        if (userId.isNullOrEmpty() || objective.isNullOrEmpty() || isHigherObj.isNullOrEmpty()) {
             println("Bad request: Missing parameters.")
             return ResponseEntity.badRequest().build()
         }
-
         return try {
-            val weightHistory = rmService.setWeightObjective(userId, objective.toDouble())
+            val weightHistory = rmService.setWeightObjective(userId, objective.toDouble(), !isHigherObj.toBoolean())
             println("Weight set successfully")
             println(weightHistory.toString())
             ResponseEntity.ok("Weight set successfully")
@@ -157,7 +154,7 @@ class RMController(private val rmService: RMService){
     }
 
     @PostMapping("/get-weight-objective")
-    fun getWeightObjective(@RequestBody request: Map<String, String>): ResponseEntity<Double?> {
+    fun getWeightObjective(@RequestBody request: Map<String, String>): ResponseEntity<Objective> {
         val userId = request["userId"]
         println("Received getWeightObjective request with: userId=$userId")
         if (userId.isNullOrEmpty()) {

@@ -36,5 +36,6 @@ data class WeightHistory(
     val userId: String,
     val weight: Double,
     val date: Date = Date(),
-    var objective: Double = 0.0
+    var objective: Double = 0.0,
+    var isHigherObj : Boolean = false
 )

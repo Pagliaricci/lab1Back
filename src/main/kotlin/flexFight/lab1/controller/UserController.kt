@@ -7,6 +7,7 @@ import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -92,6 +93,20 @@ class UserController(private val service: UserService) {
               return e.message.toString()
          }
     }
+    @PostMapping("/get-height")
+    fun getHeight(@RequestBody request: Map<String, String>): ResponseEntity<Double?> {
+        val userId = request["userId"]
 
+        if (userId.isNullOrEmpty()) {
+            return ResponseEntity.badRequest().build()
+        }
+
+        return try {
+            val height = service.getHeight(userId)
+            ResponseEntity.ok(height)
+        } catch (e: Exception) {
+            ResponseEntity.badRequest().build()
+        }
+    }
 
 }

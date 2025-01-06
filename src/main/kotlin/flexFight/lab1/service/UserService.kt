@@ -81,4 +81,8 @@ class UserService(private val userRepository: UserRepository) {
     fun getUserByUsername(username: String): User? {
         return userRepository.findByUsername(username)
     }
+
+    fun getHeight(id: String): Double {
+        return userRepository.findById(id).get().height.toDouble()
+    }
 }
