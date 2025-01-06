@@ -36,7 +36,6 @@ class RMController(private val rmService: RMService){
                 ResponseEntity.notFound().build()
             }
         } catch (e: Exception) {
-            println("Error processing request: ${e.message}")
             ResponseEntity.badRequest().build()
         }
     }
@@ -76,20 +75,15 @@ class RMController(private val rmService: RMService){
     fun setWeight(@RequestBody request: Map<String, String>): ResponseEntity<String> {
         val userId = request["userId"]
         val weight = request["weight"]
-        println("Received setWeight request with: userId=$userId, weight=$weight")
 
         if (userId.isNullOrEmpty() || weight.isNullOrEmpty()) {
-            println("Bad request: Missing parameters.")
             return ResponseEntity.badRequest().build()
         }
 
         return try {
             val weightHistory = rmService.setWeight(userId, weight.toDouble())
-            println("Weight set successfully")
-            println(weightHistory.toString())
             ResponseEntity.ok("Weight set successfully")
         } catch (e: Exception) {
-            println("Error processing request: ${e.message}")
             ResponseEntity.badRequest().build()
         }
     }
@@ -119,19 +113,14 @@ class RMController(private val rmService: RMService){
         val userId = request["userId"]
         val objective = request["objective"]
         val isHigherObj = request["isHigher"]
-        println("Received setWeight request with: userId=$userId, weight=$objective isHigher=$isHigherObj")
 
         if (userId.isNullOrEmpty() || objective.isNullOrEmpty() || isHigherObj.isNullOrEmpty()) {
-            println("Bad request: Missing parameters.")
             return ResponseEntity.badRequest().build()
         }
         return try {
-            val weightHistory = rmService.setWeightObjective(userId, objective.toDouble(), !isHigherObj.toBoolean())
-            println("Weight set successfully")
-            println(weightHistory.toString())
+            rmService.setWeightObjective(userId, objective.toDouble(), !isHigherObj.toBoolean())
             ResponseEntity.ok("Weight set successfully")
         } catch (e: Exception) {
-            println("Error processing request: ${e.message}")
             ResponseEntity.badRequest().build()
         }
     }
@@ -139,14 +128,12 @@ class RMController(private val rmService: RMService){
     @PostMapping("/get-current-weight")
     fun getCurrentWeight(@RequestBody request: Map<String, String>): ResponseEntity<Double?> {
         val userId = request["userId"]
-        println("Received getCurrentWeight request with: userId=$userId")
         if (userId.isNullOrEmpty()) {
             return ResponseEntity.badRequest().build()
         }
 
         return try {
             val weight = rmService.getCurrentWeight(userId)
-            println("Current weight: $weight")
             ResponseEntity.ok(weight)
         } catch (e: Exception) {
             ResponseEntity.badRequest().build()
@@ -156,17 +143,48 @@ class RMController(private val rmService: RMService){
     @PostMapping("/get-weight-objective")
     fun getWeightObjective(@RequestBody request: Map<String, String>): ResponseEntity<Objective> {
         val userId = request["userId"]
-        println("Received getWeightObjective request with: userId=$userId")
         if (userId.isNullOrEmpty()) {
             return ResponseEntity.badRequest().build()
         }
 
         return try {
             val weight = rmService.getWeightObjective(userId)
-            println("Current weight: $weight")
             ResponseEntity.ok(weight)
         } catch (e: Exception) {
             ResponseEntity.badRequest().build()
         }
     }
+
+    @PostMapping("/set-days-trained-objective")
+    fun setDaysTrainedObjective(@RequestBody request: Map<String, String>): ResponseEntity<String> {
+        val userId = request["userId"]
+        val objective = request["objective"]
+
+        if (userId.isNullOrEmpty() || objective.isNullOrEmpty()) {
+            return ResponseEntity.badRequest().build()
+        }
+        return try {
+            rmService.setDaysTrainedObjective(userId, objective.toInt())
+            ResponseEntity.ok("Days trained objective set successfully")
+        } catch (e: Exception) {
+            ResponseEntity.badRequest().build()
+        }
+    }
+
+   @PostMapping("/get-days-trained-objective")
+   fun getDaysTrainedObjective(@RequestBody request: Map<String, String>): ResponseEntity<Int> {
+       val userId = request["userId"]
+       println("user is $userId")
+       if (userId.isNullOrEmpty()) {
+           return ResponseEntity.badRequest().build()
+       }
+       return try {
+           println("llegue")
+           val objective = rmService.getDaysTrainedObjective(userId)
+           println("objective is $objective")
+           ResponseEntity.ok(objective!!.objective)
+       } catch (e: Exception) {
+        ResponseEntity.badRequest().build()
+       }
+   }
 }

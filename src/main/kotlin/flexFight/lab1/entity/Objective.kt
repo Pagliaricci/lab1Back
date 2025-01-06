@@ -1,5 +1,6 @@
 package flexFight.lab1.entity
 
+import jakarta.persistence.Entity
 
 
 data class Objective(

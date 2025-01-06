@@ -39,3 +39,12 @@ data class WeightHistory(
     var objective: Double = 0.0,
     var isHigherObj : Boolean = false
 )
+
+@Entity
+data class DaysTrainedObjective(
+    @Id
+    val id: String = UUID.randomUUID().toString(),
+    val userId: String,
+    val date: Date = Date(),
+    var objective: Int = 0
+)

@@ -1,6 +1,7 @@
 package flexFight.lab1.service
 
 import flexFight.lab1.entity.*
+import flexFight.lab1.repository.DaysTrainedObjectiveRepository
 import flexFight.lab1.repository.RMRepository
 import flexFight.lab1.repository.UserRepository
 import flexFight.lab1.repository.weightHistoryRepository
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class RMService(private val rmRepository: RMRepository, private val weightHistoryRepository: weightHistoryRepository, private val userRepository: UserRepository) {
+class RMService(private val rmRepository: RMRepository, private val weightHistoryRepository: weightHistoryRepository, private val userRepository: UserRepository, private val daysTrainedObjectiveRepository: DaysTrainedObjectiveRepository) {
 
     fun setRM(rm: SetRM): Double {
         if (rm.reps <= 0) throw IllegalArgumentException("Reps must be greater than 0")
@@ -93,12 +94,25 @@ class RMService(private val rmRepository: RMRepository, private val weightHistor
 
     fun getCurrentWeight(userId: String): Double {
         val user = userRepository.findById(userId).orElseThrow { IllegalArgumentException("User not found") }
-        println("User weight: ${user.weight}")
         return user.weight.toDouble()
     }
 
     fun getWeightObjective(userId: String): Objective {
         val weightHistory = weightHistoryRepository.findFirstByUserIdOrderByDateDesc(userId)
         return Objective(weightHistory?.objective ?: 0.0, weightHistory?.isHigherObj ?: false)
+    }
+fun setDaysTrainedObjective(userId: String, objective: Int) {
+    val oldObjective = daysTrainedObjectiveRepository.findByUserId(userId)
+    println("oldObjective: $oldObjective")
+    if (oldObjective != null) {
+        oldObjective.objective = objective
+        daysTrainedObjectiveRepository.save(oldObjective)
+    } else {
+        val daysTrainedObjective = DaysTrainedObjective(userId = userId, objective = objective)
+        daysTrainedObjectiveRepository.save(daysTrainedObjective)
+    }
+}
+    fun getDaysTrainedObjective(userId: String): DaysTrainedObjective?{
+        return daysTrainedObjectiveRepository.findByUserId(userId)
     }
 }
