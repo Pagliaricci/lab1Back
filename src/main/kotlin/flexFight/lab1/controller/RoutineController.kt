@@ -26,7 +26,7 @@ fun createRoutine(@RequestBody createRoutine: CreateRoutine): ResponseEntity<Str
     @GetMapping("/get")
     fun getRoutines(@RequestParam userID: String): ResponseEntity<List<Routine>> {
         val routines = routineService.getRoutines(userID)
-        return ResponseEntity.ok(routines)
+        return ResponseEntity.ok(routines.toList())
     }
 
     @GetMapping("/routineExercises")
@@ -38,7 +38,7 @@ fun createRoutine(@RequestBody createRoutine: CreateRoutine): ResponseEntity<Str
     @PostMapping("/activateRoutine")
     fun activateRoutine(@RequestBody activateRoutine: ActivateRoutine): ResponseEntity<String> {
         routineService.deactivateUserRoutines(activateRoutine.userId)
-        routineService.activateRoutine(activateRoutine.routineId)
+        routineService.activateRoutine(activateRoutine.routineId, activateRoutine.userId)
         return ResponseEntity.ok("Routine activated")
     }
     @PostMapping("/deactivate")

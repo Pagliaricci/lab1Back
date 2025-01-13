@@ -58,7 +58,7 @@ class HistoryExerciseService(
         }
     }
 
-    private fun getExerciseName(exerciseId: String): String {
+    fun getExerciseName(exerciseId: String): String {
         val routineExercise = routineExerciseRepository.findById(exerciseId).get()
     return routineExercise.exercise.name
     }

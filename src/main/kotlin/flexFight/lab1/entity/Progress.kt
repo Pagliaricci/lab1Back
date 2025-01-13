@@ -2,6 +2,8 @@ package flexFight.lab1.entity
 
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
 import java.util.Date
 import java.util.UUID
 
@@ -41,7 +43,10 @@ data class ExerciseProgress(
     var reps: Int,
     val day: Int,
     var isDone: Boolean = false,
-    val date: Date
+    val date: Date,
+    @ManyToOne
+    @JoinColumn(name = "subscriber_id") // foreign key in ExerciseProgress table
+    val subscription: Subscription? = null // Add this field
 )
 
 data class AddRecord(
