@@ -23,13 +23,20 @@ class ProgressService(private val progressRepository: ProgressRepository, privat
     }
 
     private fun saveRoutineProgress(startRoutine: StartRoutine) {
-        val progress = RoutineProgress(
+        val progress = progressRepository.findByUserIdAndRoutineId(startRoutine.userId, startRoutine.routineId)
+        if (progress != null) {
+            progress.day = startRoutine.day
+            progress.amountOfExercisesDone = startRoutine.amountOfExercisesDone
+            progressRepository.saveAndFlush(progress)
+            return
+        }
+        val newProgress = RoutineProgress(
             userId = startRoutine.userId,
             routineId = startRoutine.routineId,
             day = startRoutine.day,
             amountOfExercisesDone = startRoutine.amountOfExercisesDone
         )
-        progressRepository.saveAndFlush(progress)
+        progressRepository.saveAndFlush(newProgress)
     }
 
     private fun saveExerciseProgress(startRoutine: StartRoutine) {
@@ -55,11 +62,18 @@ class ProgressService(private val progressRepository: ProgressRepository, privat
     }
 
     fun getRoutineProgress(getProgress: GetProgress): RoutineProgress? {
-        return try {
-            progressRepository.findByUserIdAndRoutineId(getProgress.userId, getProgress.routineId)
+         try {
+            val progress = progressRepository.findByUserIdAndRoutineId(getProgress.userId, getProgress.routineId)
+             if (progress != null) {
+                 if (progress.day ==0){
+                     return null
+                 }
+                 return progress
+             }
         } catch (e: Exception) {
-            null
+            return null
         }
+        return null
     }
 
     fun updateRoutineProgress(routineProgress: UpdateProgress): String {
@@ -137,6 +151,7 @@ class ProgressService(private val progressRepository: ProgressRepository, privat
 
     fun deleteRoutineProgress(userId: String, routineId: String): String {
         try {
+            println("Deleting routine progress for user $userId and routine $routineId")
             progressRepository.deleteByUserIdAndRoutineId(userId, routineId)
             return "Routine progress deleted successfully"
         } catch (e: Exception) {
@@ -170,11 +185,41 @@ fun updateProgressDay(updateProgressDate: UpdateProgressDate): RoutineProgress? 
             progress.lastUpdated = updateProgressDate.date
             progressRepository.saveAndFlush(progress)
             return progress
-        } else {
+        }
+        else {
             return null
         }
     } catch (e: Exception) {
         return null
     }
-}
+    }
+
+    fun setProgressToCero(userId: String, routineId: String): String {
+        try {
+            val routineProgress = progressRepository.findByUserIdAndRoutineId(userId, routineId) ?: return "Progress not found"
+            routineProgress.day = 0
+            routineProgress.amountOfExercisesDone = 0
+            routineProgress.initiationDate = Date()
+            routineProgress.lastUpdated = Date()
+            progressRepository.saveAndFlush(routineProgress)
+            return "Progress set to cero successfully"
+
+        } catch (e: Exception) {
+            return "Error: ${e.message}"
+        }
+    }
+
+    fun setExerciseProgressToCero(userId: String, routineId: String): String {
+        try {
+            val exercises = exerciseProgressRepository.findByUserIdAndRoutineId(userId, routineId)
+            exercises.forEach {
+                it.isDone = false
+                exerciseProgressRepository.saveAndFlush(it)
+            }
+            return "Exercise progress set to cero successfully"
+        } catch (e: Exception) {
+            return "Error: ${e.message}"
+        }
+    }
+
 }

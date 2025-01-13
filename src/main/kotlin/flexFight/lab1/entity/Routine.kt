@@ -28,7 +28,8 @@ data class Routine(
     @Column(updatable = false)
     val createdAt: Date = Date(),
 
-    var isActive: Boolean = false
+    var isActive: Boolean = false,
+    var rating: Double = 0.0,
 ) {
     constructor(createRoutine: CreateRoutine, exerciseRepository: ExerciseRepository) : this(
         name = createRoutine.name,
@@ -112,4 +113,9 @@ data class GetExerciseHistory(
     val userId: String,
     val routineId: String,
     val routineExerciseId: String
+)
+
+data class RateRoutine(
+    val routineId: String,
+    val rating: Double
 )

@@ -28,7 +28,7 @@ data class RoutineProgress(
     val routineId: String,
     var day : Int,
     var amountOfExercisesDone: Int,
-    val initiationDate: Date = Date(),
+    var initiationDate: Date = Date(),
     var lastUpdated: Date = Date()
 )
 

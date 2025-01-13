@@ -58,5 +58,11 @@ fun createRoutine(@RequestBody createRoutine: CreateRoutine): ResponseEntity<Str
         routineService.deleteRoutineById(id)
         return ResponseEntity.ok("Routine deleted successfully")
     }
+
+    @PostMapping("/rate")
+    fun rateRoutine(@RequestBody rateRoutine: RateRoutine): ResponseEntity<String> {
+        routineService.rateRoutine(rateRoutine)
+        return ResponseEntity.ok("Routine rated successfully")
+    }
 }
 
