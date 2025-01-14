@@ -17,8 +17,11 @@ data class HistoryExercise(
     val weight: Int,
     val reps: Int,
     val sets: Int,
-    val date: Date = Date()
-)
+    val date: Date = Date(),
+    @ManyToOne
+    @JoinColumn(name = "subscription_id")
+    val subscription: Subscription? = null,
+    )
 
 @Entity
 data class RoutineProgress(
@@ -43,10 +46,7 @@ data class ExerciseProgress(
     var reps: Int,
     val day: Int,
     var isDone: Boolean = false,
-    val date: Date,
-    @ManyToOne
-    @JoinColumn(name = "subscriber_id") // foreign key in ExerciseProgress table
-    val subscription: Subscription? = null // Add this field
+    val date: Date
 )
 
 data class AddRecord(
@@ -55,7 +55,8 @@ data class AddRecord(
     val userId: String,
     val weight: Int,
     val reps: Int,
-    val sets: Int
+    val sets: Int,
+    val subscription: Subscription? = null
 )
 
 data class StartRoutine(

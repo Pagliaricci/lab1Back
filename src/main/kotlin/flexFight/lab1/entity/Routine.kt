@@ -116,6 +116,7 @@ data class GetExerciseHistory(
 )
 
 data class RateRoutine(
+    val userId: String,
     val routineId: String,
     val rating: Double
 )

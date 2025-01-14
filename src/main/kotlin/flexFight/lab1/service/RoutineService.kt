@@ -78,7 +78,6 @@ fun getRoutines(userID: String): Array<Routine> {
         val routines = routineRepository.findByCreatorOrderByCreatedAtDesc(userID)
         routines.forEach { routine ->
             routine.isActive = false
-            println("deleting routine progress")
             deleteRoutineProgress(routine.id, userID)
             routineRepository.saveAndFlush(routine)
         }
@@ -87,8 +86,9 @@ fun getRoutines(userID: String): Array<Routine> {
             val sub = subscriptionRepository.findByUserIdAndRoutineId(subscription.userId, subscription.routineId)
                 ?: throw IllegalArgumentException("Routine with ID ${subscription.routineId} and creator ${subscription.userId} not found")
             sub.isActive = false
-            println("deleting course progress")
-            deleteCourseProgress(sub.routineId, userID)
+            sub.progress = null
+            sub.realizedExercises = listOf<HistoryExercise>().toMutableList()
+            deleteRoutineProgress(sub.routineId, sub.userId)
             subscriptionRepository.saveAndFlush(sub)
         }
     }
@@ -98,10 +98,6 @@ fun getRoutines(userID: String): Array<Routine> {
         progressService.deleteExerciseProgress(userId, routineId)
     }
 
-    fun deleteCourseProgress(routineId: String, userId: String) {
-        progressService.setProgressToCero(userId, routineId)
-        progressService.setExerciseProgressToCero(userId, routineId)
-    }
     fun getActiveRoutine(userId: String): FullRoutine? {
         val routine = routineRepository.findByCreatorAndIsActive(userId, true)
         if (routine!= null){
@@ -179,15 +175,16 @@ fun getRoutines(userID: String): Array<Routine> {
         routineRepository.deleteById(id)
     }
     fun deactivateRoutine(deactivateRoutine: DeactivateRoutine) {
-        progressService.deleteRoutineProgress(deactivateRoutine.userId, deactivateRoutine.routineId)
-        progressService.deleteExerciseProgress(deactivateRoutine.userId, deactivateRoutine.routineId)
-
         val subscription = subscriptionRepository.findByUserIdAndRoutineId(deactivateRoutine.userId, deactivateRoutine.routineId)
         if (subscription != null){
             subscription.isActive = false
+            subscription.progress = null
+            subscription.realizedExercises = listOf<HistoryExercise>().toMutableList()
+            deleteRoutineProgress(deactivateRoutine.userId, deactivateRoutine.routineId)
             subscriptionRepository.saveAndFlush(subscription)
             return
         }
+        deleteRoutineProgress(deactivateRoutine.userId, deactivateRoutine.routineId)
         val routine = routineRepository.findById(deactivateRoutine.routineId)
             .orElseThrow { IllegalArgumentException("Routine with ID ${deactivateRoutine.routineId} not found") }
         routine.isActive = false
@@ -211,7 +208,15 @@ fun getRoutines(userID: String): Array<Routine> {
          } else {
               routine.rating = (routine.rating + rateRoutine.rating) / 2
          }
-          routineRepository.saveAndFlush(routine)
-       }
+       val subscription = subscriptionRepository.findByUserIdAndRoutineId(rateRoutine.userId, rateRoutine.routineId)
+         if (subscription != null){
+             subscriptionRepository.deleteByUserIdAndRoutineId(rateRoutine.userId, rateRoutine.routineId)
+             deleteRoutineProgress(subscription.userId, subscription.routineId)
+             return
+            }
+       deleteRoutineProgress(rateRoutine.routineId, rateRoutine.userId)
+       routine.isActive = false
+       routineRepository.saveAndFlush(routine)
+   }
 
 }

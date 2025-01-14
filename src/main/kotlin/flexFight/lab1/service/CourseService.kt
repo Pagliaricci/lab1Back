@@ -1,8 +1,8 @@
 package flexFight.lab1.service
 
 import flexFight.lab1.entity.*
-import flexFight.lab1.repository.ExerciseProgressRepository
 import flexFight.lab1.repository.HistoryExerciseRepository
+import flexFight.lab1.repository.RoutineExerciseRepository
 import flexFight.lab1.repository.SubscriptionRepository
 import org.springframework.stereotype.Service
 import java.util.*
@@ -13,15 +13,14 @@ class CourseService(
     private val routineService: RoutineService,
     private val progressService: ProgressService,
     private val subscriptionRepository: SubscriptionRepository,
-    private val exerciseProgressRepository: ExerciseProgressRepository,
     private val historyRepository: HistoryExerciseRepository,
-    private val historyExerciseService: HistoryExerciseService,
+    private val routineExerciseRepository: RoutineExerciseRepository,
 
-) {
+    ) {
 
     fun getAllCourses(): List<FullRoutine> {
-        val courses = routineService.getAll().filter { isCourse(it.creator) }
-        return courses.map {
+        val routines = routineService.getAll().filter { isCourse(it.creator) }
+        val courses = routines.map {
             FullRoutine(
                 it.id,
                 it.name,
@@ -45,10 +44,12 @@ class CourseService(
                 }
             )
         }
+        return courses
     }
 
     private fun isCourse(creator: String): Boolean {
-        return userService.getUser(creator).role == "Trainer"
+        val a =  userService.getUser(creator).role == "Trainer"
+        return a
     }
 
     private fun getCreatorName(creator: String): String {
@@ -63,20 +64,12 @@ class CourseService(
         if (existingSubscriber != null) {
             throw IllegalArgumentException("User is already subscribed to this course")
         }
-
-        // Start routine progress
-        progressService.startRoutine(StartRoutine(routine.id, user.id))
-        val exercises = exerciseProgressRepository.findByUserIdAndRoutineId(user.id, routine.id)
-
         // Create subscriber
         val subscription = Subscription(
             id = UUID.randomUUID().toString(),
             userId = user.id,
             routineId = routine.id,
-            progress = progressService.getRoutineProgress(GetProgress(routine.id, user.id))!!,
-            realizedExercises = exercises
         )
-
         return subscriptionRepository.saveAndFlush(subscription)
     }
 
@@ -163,33 +156,42 @@ class CourseService(
     }
 
     fun getProgressForUser(userId: String, routineId: String): SubscriberWithProgress {
-        // Buscar la suscripción del usuario en la rutina específica
         val subscription = subscriptionRepository.findByUserIdAndRoutineId(userId, routineId)
             ?: throw IllegalArgumentException("No subscription found for user $userId in routine $routineId")
-
-        // Obtener el progreso de la rutina para ese usuario
-        val progress = progressService.getRoutineProgress(GetProgress(routineId, userId))
-            ?: throw IllegalArgumentException("No progress found for user $userId in routine $routineId")
-
-        // Obtener el progreso de los ejercicios desde el HistoryExercise
-        val exercisesProgress = historyRepository.findByUserIdAndRoutineId(userId, routineId).map {
-            ExerciseProgressWithDetails(
-                exerciseName = historyExerciseService.getExerciseName(it.exerciseId),  // Obtener el nombre del ejercicio
-                sets = it.sets,
-                reps = it.reps,
-                weight = it.weight,
-                date = it.date
+        if (subscription.progress == null || subscription.realizedExercises.isEmpty()) {
+            println("llegue aca y no deberia")
+            return SubscriberWithProgress(
+                userId = userId,
+                username = userService.getUser(userId).username,
+                routineId = routineId,
+                progress = subscription.progress,
+                exercisesProgress = emptyList()
             )
         }
-
-        // Crear y devolver el DTO con toda la información
+        println("llegue aca y  deberia")
+        val exerciseProgress: List<ExerciseProgressWithDetails> = subscription.realizedExercises.map { exerciseHistory ->
+            val exercise = routineExerciseRepository.findById(exerciseHistory.exerciseId).get()
+            val history = historyRepository.findByUserIdAndExerciseIdAndRoutineId(userId, exerciseHistory.exerciseId, routineId)
+                ?: throw IllegalArgumentException("No history found for user $userId in exercise ${exerciseHistory.exerciseId} in routine $routineId")
+            ExerciseProgressWithDetails(
+                exerciseName = exercise.exercise.name,
+                sets = history.sets,
+                reps = history.reps,
+                weight = history.weight,
+                date = history.date,
+                )
+        }
         return SubscriberWithProgress(
             userId = userId,
-            username = userService.getUser(userId).username,  // Obtener el nombre de usuario
+            username = userService.getUser(userId).username,
             routineId = routineId,
-            progress = progress,
-            exercisesProgress = exercisesProgress
+            progress = subscription.progress,
+            exercisesProgress = exerciseProgress
         )
+    }
+
+    fun isSubscribed(userId: String, routineId: String): Boolean {
+        return subscriptionRepository.findByUserIdAndRoutineId(userId, routineId) != null
     }
 
 

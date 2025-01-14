@@ -11,11 +11,11 @@ class RoutineController(
     private val routineService: RoutineService,
 ) {
 
-@PostMapping("/create")
-fun createRoutine(@RequestBody createRoutine: CreateRoutine): ResponseEntity<String> {
-    routineService.createRoutine(createRoutine)
-    return ResponseEntity.ok("Routine created successfully")
-}
+    @PostMapping("/create")
+    fun createRoutine(@RequestBody createRoutine: CreateRoutine): ResponseEntity<String> {
+        routineService.createRoutine(createRoutine)
+        return ResponseEntity.ok("Routine created successfully")
+    }
 
     @GetMapping("/exercises")
     fun getExercises(@RequestBody routineId : String): ResponseEntity<List<RoutineExercise>> {

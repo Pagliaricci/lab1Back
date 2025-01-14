@@ -23,7 +23,8 @@ class HistoryExerciseService(
                 weight = addRecord.weight,
                 reps = addRecord.reps,
                 sets = addRecord.sets,
-                routineId = addRecord.routineId
+                routineId = addRecord.routineId,
+                subscription = addRecord.subscription
             )
             historyExerciseRepository.saveAndFlush(historyExercise)
             return "Record added successfully"

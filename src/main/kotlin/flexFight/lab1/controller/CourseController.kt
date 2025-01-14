@@ -41,6 +41,12 @@ class CourseController(private val courseService: CourseService) {
         return courseService.unsubscribeFromCourse(addSubscriber.userId, addSubscriber.routineId)
     }
 
+    @GetMapping("/isSubscribed")
+    fun isSubscribed(@RequestParam userId: String, @RequestParam routineId: String): Boolean {
+        return courseService.isSubscribed(userId, routineId)
+    }
+
+
     @GetMapping("/search")
     fun searchCourses(@RequestParam query: String): List<FullRoutine> {
         return courseService.searchCourses(query)

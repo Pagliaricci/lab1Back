@@ -9,4 +9,5 @@ interface SubscriptionRepository : JpaRepository<Subscription, String> {
     fun findByUserIdAndRoutineId(userId: String, routineId: String): Subscription?
     fun findByRoutineId(routineId: String): List<Subscription>
     fun findByUserId(userId: String): List<Subscription>
+    fun deleteByUserIdAndRoutineId(userId: String, routineId: String)
 }

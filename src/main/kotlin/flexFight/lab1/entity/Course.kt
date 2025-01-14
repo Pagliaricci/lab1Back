@@ -12,11 +12,12 @@ data class Subscription(
     val routineId: String,
     @ManyToOne
     @JoinColumn(name = "progress_id", referencedColumnName = "id")
-    val progress: RoutineProgress,
+    var progress: RoutineProgress? = null,
     @OneToMany(mappedBy = "subscription", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
-    val realizedExercises: List<ExerciseProgress> = listOf(),
+    var realizedExercises: MutableList<HistoryExercise> = mutableListOf(),
     var isActive: Boolean = false
 )
+
 
 
 data class AddSubscriber(
@@ -29,15 +30,15 @@ data class SubscriberWithName(
     val userId: String,
     val username: String,
     val routineId: String,
-    val progress: RoutineProgress,
-    val realizedExercises: List<ExerciseProgress>
+    val progress: RoutineProgress?,
+    val realizedExercises: List<HistoryExercise>
 )
 
 data class SubscriberWithProgress(
     val userId: String,
     val username: String,
     val routineId: String,
-    val progress: RoutineProgress,
+    val progress: RoutineProgress?,
     val exercisesProgress: List<ExerciseProgressWithDetails>
 )
 
