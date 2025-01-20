@@ -122,7 +122,8 @@ fun getRoutines(userID: String): Array<Routine> {
                 creator = routine.creator,
                 isActive = routine.isActive,
                 createdAt = routine.createdAt,
-                exercises = fullRoutineExercises
+                exercises = fullRoutineExercises,
+                rating = routine.rating
             )
             return fullRoutine
         }
@@ -160,7 +161,8 @@ fun getRoutines(userID: String): Array<Routine> {
                 creator = routine.creator,
                 isActive = routine.isActive,
                 createdAt = routine.createdAt,
-                exercises = fullRoutineExercises
+                exercises = fullRoutineExercises,
+                rating = routine.rating
             )
             return fullRoutine
         }

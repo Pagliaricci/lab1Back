@@ -89,7 +89,8 @@ data class FullRoutine(
     val creator: String,
     val createdAt: Date,
     var isActive: Boolean,
-    val exercises: List<FullRoutineExercise>
+    val exercises: List<FullRoutineExercise>,
+    val rating: Double
 )
 
 

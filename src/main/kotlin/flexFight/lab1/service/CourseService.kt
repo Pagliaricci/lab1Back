@@ -41,6 +41,8 @@ class CourseService(
                         re.day
                     )
                 }
+                ,
+                it.rating
             )
         }
         return courses
@@ -111,7 +113,8 @@ class CourseService(
                         re.reps,
                         re.day
                     )
-                }
+                },
+                routine.rating
             )
         }
     }
@@ -148,7 +151,8 @@ class CourseService(
                         re.reps,
                         re.day
                     )
-                }
+                },
+                it.rating
             )
         }
     }
