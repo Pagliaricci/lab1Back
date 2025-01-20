@@ -2,7 +2,6 @@ package flexFight.lab1.service
 
 import flexFight.lab1.entity.*
 import flexFight.lab1.repository.HistoryExerciseRepository
-import flexFight.lab1.repository.RoutineExerciseRepository
 import flexFight.lab1.repository.SubscriptionRepository
 import org.springframework.stereotype.Service
 import java.util.*
@@ -183,6 +182,10 @@ class CourseService(
 
     fun isSubscribed(userId: String, routineId: String): Boolean {
         return subscriptionRepository.findByUserIdAndRoutineId(userId, routineId) != null
+    }
+
+    fun getUserSubscriptions(userId: String): List<Subscription> {
+        return subscriptionRepository.findByUserId(userId)
     }
 
 }
