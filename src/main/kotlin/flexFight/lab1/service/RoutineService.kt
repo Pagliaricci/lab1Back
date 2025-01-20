@@ -87,7 +87,6 @@ fun getRoutines(userID: String): Array<Routine> {
                 ?: throw IllegalArgumentException("Routine with ID ${subscription.routineId} and creator ${subscription.userId} not found")
             sub.isActive = false
             sub.progress = null
-            sub.realizedExercises = listOf<HistoryExercise>().toMutableList()
             deleteRoutineProgress(sub.routineId, sub.userId)
             subscriptionRepository.saveAndFlush(sub)
         }
@@ -179,7 +178,6 @@ fun getRoutines(userID: String): Array<Routine> {
         if (subscription != null){
             subscription.isActive = false
             subscription.progress = null
-            subscription.realizedExercises = listOf<HistoryExercise>().toMutableList()
             deleteRoutineProgress(deactivateRoutine.userId, deactivateRoutine.routineId)
             subscriptionRepository.saveAndFlush(subscription)
             return
@@ -200,6 +198,7 @@ fun getRoutines(userID: String): Array<Routine> {
             .orElseThrow { IllegalArgumentException("Routine with ID $id not found") }
     }
 
+    @Transactional
    fun rateRoutine(rateRoutine: RateRoutine) {
         val routine = routineRepository.findById(rateRoutine.routineId)
             .orElseThrow { IllegalArgumentException("Routine with ID ${rateRoutine.routineId} not found") }
@@ -218,5 +217,9 @@ fun getRoutines(userID: String): Array<Routine> {
        routine.isActive = false
        routineRepository.saveAndFlush(routine)
    }
+
+    fun getExerciseName(id:String):String{
+        return routineExerciseRepository.findById(id).get().exercise.name
+    }
 
 }

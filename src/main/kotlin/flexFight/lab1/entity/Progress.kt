@@ -1,9 +1,6 @@
 package flexFight.lab1.entity
 
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
+import jakarta.persistence.*
 import java.util.Date
 import java.util.UUID
 
@@ -18,10 +15,7 @@ data class HistoryExercise(
     val reps: Int,
     val sets: Int,
     val date: Date = Date(),
-    @ManyToOne
-    @JoinColumn(name = "subscription_id")
-    val subscription: Subscription? = null,
-    )
+)
 
 @Entity
 data class RoutineProgress(
@@ -29,10 +23,10 @@ data class RoutineProgress(
     val id: String = UUID.randomUUID().toString(),
     val userId: String,
     val routineId: String,
-    var day : Int,
+    var day: Int,
     var amountOfExercisesDone: Int,
     var initiationDate: Date = Date(),
-    var lastUpdated: Date = Date()
+    var lastUpdated: Date = Date(),
 )
 
 @Entity

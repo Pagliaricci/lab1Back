@@ -8,5 +8,4 @@ import org.springframework.stereotype.Repository
 interface ExerciseRepository : JpaRepository<Exercise, String>{
     fun findByNameContainingIgnoreCase(search: String): List<Exercise>
     fun findByCategory(category: String): List<Exercise> // New method
-
 }

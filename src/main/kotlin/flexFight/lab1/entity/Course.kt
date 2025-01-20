@@ -1,8 +1,8 @@
 package flexFight.lab1.entity
 
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import jakarta.persistence.*
 import java.util.*
-
 
 @Entity
 data class Subscription(
@@ -12,9 +12,8 @@ data class Subscription(
     val routineId: String,
     @ManyToOne
     @JoinColumn(name = "progress_id", referencedColumnName = "id")
+    @JsonManagedReference
     var progress: RoutineProgress? = null,
-    @OneToMany(mappedBy = "subscription", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
-    var realizedExercises: MutableList<HistoryExercise> = mutableListOf(),
     var isActive: Boolean = false
 )
 

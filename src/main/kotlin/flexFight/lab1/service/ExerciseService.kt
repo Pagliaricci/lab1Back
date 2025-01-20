@@ -21,5 +21,12 @@ class ExerciseService(
     fun getExercisesByCategory(category: String): List<Exercise> {
         return exerciseRepository.findByCategory(category)
     }
+
+    fun getName(exerciseId: String): String {
+        return exerciseRepository.findById(exerciseId)
+            .map { it.name }
+            .orElseThrow { NoSuchElementException("Exercise not found with ID: $exerciseId") }
+    }
+
 }
 

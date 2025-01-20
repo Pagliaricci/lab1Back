@@ -33,7 +33,6 @@ class ProgressService(
         if (subscription != null) {
             subscription.isActive = true
             subscription.progress = progressRepository.findByUserIdAndRoutineId(startRoutine.userId, startRoutine.routineId)
-            subscription.realizedExercises += historyExerciseRepository.findByUserIdAndRoutineId(startRoutine.userId, startRoutine.routineId)
             subscriptionRepository.saveAndFlush(subscription)
         }
     }
@@ -118,9 +117,6 @@ class ProgressService(
     private fun updateSubscription(completeExercise: CompleteExercise){
         val subscription = subscriptionRepository.findByUserIdAndRoutineId(completeExercise.userId,completeExercise.routineId)
             ?: return
-        val historyExercise = historyExerciseRepository.findByUserIdAndExerciseIdAndRoutineId(completeExercise.userId,completeExercise.routineExerciseId,completeExercise.routineId)
-            ?: return
-        subscription.realizedExercises += historyExercise
         subscriptionRepository.saveAndFlush(subscription)
     }
     private fun updateExerciseProgress(completeExercise: CompleteExercise) {
