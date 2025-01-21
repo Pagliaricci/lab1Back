@@ -1,15 +1,33 @@
 package flexFight.lab1.config
 
-import flexFight.lab1.handler.ChatWebSocketHandler
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.context.annotation.Configuration
-import org.springframework.web.socket.config.annotation.EnableWebSocket
-import org.springframework.web.socket.config.annotation.WebSocketConfigurer
-import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
+import org.springframework.http.MediaType.APPLICATION_JSON
+import org.springframework.messaging.converter.DefaultContentTypeResolver
+import org.springframework.messaging.converter.MessageConverter
+import org.springframework.messaging.simp.config.MessageBrokerRegistry
+import org.springframework.web.socket.config.annotation.*
 
 @Configuration
-@EnableWebSocket
-class WebSocketConfig(private val chatWebSocketHandler: ChatWebSocketHandler) : WebSocketConfigurer {
-    override fun registerWebSocketHandlers(registry: WebSocketHandlerRegistry) {
-        registry.addHandler(chatWebSocketHandler, "/ws").setAllowedOrigins("*")
+@EnableWebSocketMessageBroker
+class WebSocketConfig : WebSocketMessageBrokerConfigurer {
+    override fun registerStompEndpoints(registry: StompEndpointRegistry) {
+        registry.addEndpoint("/ws").setAllowedOrigins("*").withSockJS()
+    }
+
+    override fun configureMessageBroker(registry: MessageBrokerRegistry) {
+        registry.enableSimpleBroker("/user")
+        registry.setApplicationDestinationPrefixes("/app")
+        registry.setUserDestinationPrefix("/user")
+    }
+
+    override fun configureMessageConverters(messageConverters: MutableList<MessageConverter>): Boolean {
+        val resolver = DefaultContentTypeResolver()
+        resolver.defaultMimeType = APPLICATION_JSON
+        val converter = org.springframework.messaging.converter.MappingJackson2MessageConverter()
+        converter.objectMapper = ObjectMapper()
+        converter.contentTypeResolver = resolver
+        messageConverters.add(converter)
+        return false
     }
 }

@@ -1,16 +1,15 @@
 package flexFight.lab1.service
 
-import flexFight.lab1.entity.CreateUser
-import flexFight.lab1.entity.LoginUser
-import flexFight.lab1.entity.UpdateUser
-import flexFight.lab1.entity.User
+import flexFight.lab1.entity.*
+import flexFight.lab1.repository.ChatRepository
 import flexFight.lab1.repository.UserRepository
 import org.slf4j.LoggerFactory
 
 import org.springframework.stereotype.Service
+import kotlin.jvm.optionals.getOrNull
 
 @Service
-class UserService(private val userRepository: UserRepository) {
+class UserService(private val userRepository: UserRepository, private val chatRepository: ChatRepository) {
     private val logger: org.slf4j.Logger? = LoggerFactory.getLogger(UserService::class.java)
 
     fun createUser(createUser: CreateUser): User {
@@ -84,5 +83,22 @@ class UserService(private val userRepository: UserRepository) {
 
     fun getHeight(id: String): Double {
         return userRepository.findById(id).get().height.toDouble()
+    }
+
+    fun saveUser(user: ChatUser) {
+        user.status = Status.ONLINE
+        chatRepository.save(user)
+
+    }
+    fun disconnect(user: ChatUser){
+        val storedUser = chatRepository.findById(user.username).getOrNull()
+        if (storedUser != null){
+            storedUser.status = Status.OFFLINE
+            chatRepository.save(storedUser)
+        }
+    }
+
+    fun findConnectedUsers(): List<ChatUser> {
+        return chatRepository.findAllByStatus(Status.ONLINE)
     }
 }

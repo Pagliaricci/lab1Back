@@ -109,5 +109,17 @@ class UserController(private val service: UserService) {
             ResponseEntity.badRequest().build()
         }
     }
+    @GetMapping
+    fun getUsers(): List<Map<String, String>> {
+        return service.getUsers().map {
+            mapOf(
+                "id" to it.id,
+                "username" to it.username,
+                "role" to it.role
+            )
+        }
+    }
+
+
 
 }
