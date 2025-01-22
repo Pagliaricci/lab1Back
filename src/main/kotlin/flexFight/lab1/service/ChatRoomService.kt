@@ -1,5 +1,6 @@
-package flexFight.lab1.chatRoom
+package flexFight.lab1.service
 
+import flexFight.lab1.entity.ChatRoom
 import flexFight.lab1.repository.ChatRoomRepository
 import org.springframework.stereotype.Service
 import java.util.*

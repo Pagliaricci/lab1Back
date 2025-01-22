@@ -1,22 +1,10 @@
 package flexFight.lab1.entity
 
-import jakarta.persistence.Id
-import javax.print.attribute.standard.RequestingUserName
+import jakarta.persistence.*
+import java.util.*
 
-
-class ChatMessage(
-    val content: String,
-    val senderId: String,
-    val type: MessageType
-)
-
-enum class MessageType {
-    CHAT,
-    JOIN,
-    LEAVER
-}
-
-
+@Entity
+@Table(name = "chat_users")
 class ChatUser(
     @Id
     val username: String,
