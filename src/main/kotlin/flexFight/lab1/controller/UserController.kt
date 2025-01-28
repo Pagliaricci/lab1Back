@@ -111,13 +111,14 @@ class UserController(private val service: UserService) {
     }
     @GetMapping
     fun getUsers(): List<Map<String, String>> {
-        return service.getUsers().map {
+        val users = service.getUsers().map {
             mapOf(
                 "id" to it.id,
                 "username" to it.username,
                 "role" to it.role
             )
         }
+        return users
     }
 
 

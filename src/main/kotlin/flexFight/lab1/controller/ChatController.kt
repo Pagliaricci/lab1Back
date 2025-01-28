@@ -1,39 +1,31 @@
 package flexFight.lab1.controller
 
 
-import flexFight.lab1.entity.ChatMessage
-import flexFight.lab1.entity.ChatNotification
-import flexFight.lab1.service.ChatMessageService
-import org.springframework.http.ResponseEntity
-import org.springframework.messaging.handler.annotation.MessageMapping
-import org.springframework.messaging.handler.annotation.Payload
-import org.springframework.messaging.simp.SimpMessagingTemplate
+import flexFight.lab1.entity.ChatRoom
+import flexFight.lab1.service.ChatService
+import flexFight.lab1.service.UserService
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.*
 
 @Controller
-class ChatController(private val chatMessageService: ChatMessageService,
-                     private val simpMessagingTemplate: SimpMessagingTemplate
-) {
+@RequestMapping("/chats")
+class ChatController(private val service: ChatService, private val userService: UserService) {
 
-    @GetMapping("/messages/{senderId}/{recipientId}")
-    fun findChatMessages(@PathVariable senderId: String, @PathVariable recipientId: String): ResponseEntity<List<ChatMessage>> {
-        return ResponseEntity.ok(chatMessageService.findChatMessages(senderId, recipientId))
+
+    @GetMapping("/get/{userId}")
+    fun getChats(@PathVariable userId: String): List<ChatRoom> {
+        return service.getChats(userId)
+    }
+
+    @PostMapping("/create")
+    fun createChat(@RequestBody user1Id: String, @RequestBody user2Id: String): ChatRoom {
+        return service.findOrCreateChat(user1Id, user2Id)
+    }
+
+    @GetMapping("getMessages/{userId}&{recipientId}")
+    fun getMessages(@PathVariable userId: String, @PathVariable recipientId: String): List<ChatRoom> {
+        return service.getChatMessages(userId, recipientId)
     }
 
 
-    @MessageMapping("/chat")
-    fun processMessage(@Payload chatMessage: ChatMessage) {
-        val savedMessage = chatMessageService.saveChatMessage(chatMessage)
-        simpMessagingTemplate.convertAndSendToUser(
-            chatMessage.recipientId, "/queue/messages",
-            ChatNotification(
-                savedMessage.id,
-                savedMessage.senderId,
-                savedMessage.recipientId,
-                savedMessage. content,
-            )
-        )
-    }
 }

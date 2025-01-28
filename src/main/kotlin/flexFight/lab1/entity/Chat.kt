@@ -15,3 +15,8 @@ enum class Status {
     ONLINE,
     OFFLINE
 }
+
+data class CreateChat(
+    val senderId: String,
+    val recipientId: String
+    )

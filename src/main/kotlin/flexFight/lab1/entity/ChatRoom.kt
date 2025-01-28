@@ -1,15 +1,18 @@
 package flexFight.lab1.entity
 
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
 import java.util.UUID
 
-@Entity
-data class ChatRoom (
-    @Id
-    val id: String = UUID.randomUUID().toString(),
-    val chatId: String,
-    val senderId : String,
-    val recipientId: String
+import jakarta.persistence.*
 
+@Entity
+@Table(name = "chat_rooms")
+data class ChatRoom(
+    @Id @GeneratedValue
+    val id: UUID? = null,
+
+    @Column(nullable = false)
+    val user1Id: String,
+
+    @Column(nullable = false)
+    val user2Id: String
 )
