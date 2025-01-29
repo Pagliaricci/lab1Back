@@ -174,14 +174,11 @@ class RMController(private val rmService: RMService){
    @PostMapping("/get-days-trained-objective")
    fun getDaysTrainedObjective(@RequestBody request: Map<String, String>): ResponseEntity<Int> {
        val userId = request["userId"]
-       println("user is $userId")
        if (userId.isNullOrEmpty()) {
            return ResponseEntity.badRequest().build()
        }
        return try {
-           println("llegue")
            val objective = rmService.getDaysTrainedObjective(userId)
-           println("objective is $objective")
            ResponseEntity.ok(objective!!.objective)
        } catch (e: Exception) {
         ResponseEntity.badRequest().build()

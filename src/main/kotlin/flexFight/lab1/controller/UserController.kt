@@ -103,7 +103,6 @@ class UserController(private val service: UserService) {
 
         return try {
             val height = service.getHeight(userId)
-            println("Height: $height")
             ResponseEntity.ok(height)
         } catch (e: Exception) {
             ResponseEntity.badRequest().build()

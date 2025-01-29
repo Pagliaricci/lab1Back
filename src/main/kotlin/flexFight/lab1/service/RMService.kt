@@ -103,7 +103,6 @@ class RMService(private val rmRepository: RMRepository, private val weightHistor
     }
 fun setDaysTrainedObjective(userId: String, objective: Int) {
     val oldObjective = daysTrainedObjectiveRepository.findByUserId(userId)
-    println("oldObjective: $oldObjective")
     if (oldObjective != null) {
         oldObjective.objective = objective
         daysTrainedObjectiveRepository.save(oldObjective)
