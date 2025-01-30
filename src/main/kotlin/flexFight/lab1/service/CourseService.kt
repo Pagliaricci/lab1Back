@@ -160,7 +160,6 @@ class CourseService(
         val subscription = subscriptionRepository.findByUserIdAndRoutineId(userId, routineId)
             ?: throw IllegalArgumentException("No subscription found for user $userId in routine $routineId")
         if (subscription.progress == null) {
-            println("llegue aca y no deberia")
             return SubscriberWithProgress(
                 userId = userId,
                 username = userService.getUser(userId).username,
@@ -169,7 +168,6 @@ class CourseService(
                 exercisesProgress = emptyList()
             )
         }
-        println("llegue aca y  deberia")
         val exerciseProgress: List<ExerciseProgressWithDetails> = historyRepository.findByUserIdAndRoutineId(userId,routineId).map { exercise -> ExerciseProgressWithDetails(routineService.getExerciseName(exercise.exerciseId),exercise.sets,exercise.reps,exercise.weight,exercise.date)}
         return SubscriberWithProgress(
             userId = userId,
@@ -184,8 +182,21 @@ class CourseService(
         return subscriptionRepository.findByUserIdAndRoutineId(userId, routineId) != null
     }
 
-    fun getUserSubscriptions(userId: String): List<Subscription> {
-        return subscriptionRepository.findByUserId(userId)
-    }
 
+
+fun getAllMySubscribers(trainerId: String): List<User> {
+    val routines = routineService.getAll().filter { it.creator == trainerId }
+    val subs = routines.flatMap { subscriptionRepository.findAllByRoutineId(it.id) }
+    val users = subs.map { userService.getUser(it.userId) }.toSet()
+    println(users)
+    return users.toList()
+}
+
+    fun getAllMyTrainers(userId: String): List<User>{
+        val subs = subscriptionRepository.findAllByUserId(userId)
+        val courses = subs.map { routineService.getRoutine(it.routineId) }
+        val trainers = courses.map { userService.getUser(it.creator) }
+        println(trainers)
+        return trainers
+    }
 }

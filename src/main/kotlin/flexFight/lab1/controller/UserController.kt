@@ -2,22 +2,19 @@ package flexFight.lab1.controller
 
 import flexFight.lab1.entity.CreateUser
 import flexFight.lab1.entity.LoginUser
+import flexFight.lab1.service.CourseService
 import flexFight.lab1.service.UserService
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 
 @RequestMapping("/users")
 @RestController
-class UserController(private val service: UserService) {
+class UserController(private val service: UserService, private val courseService: CourseService) {
 
     @GetMapping("/hello")
     fun hello(): String {
@@ -110,7 +107,7 @@ class UserController(private val service: UserService) {
     }
     @GetMapping
     fun getUsers(): List<Map<String, String>> {
-        val users = service.getUsers().map {
+        val users = service.getUsers().filter { it.role == "User" }.map {
             mapOf(
                 "id" to it.id,
                 "username" to it.username,
@@ -119,6 +116,31 @@ class UserController(private val service: UserService) {
         }
         return users
     }
+
+    @GetMapping("/subscribers/{userId}")
+    fun getSubscribers(@PathVariable userId: String): List<Map<String, String>> {
+        val subscribers = courseService.getAllMySubscribers(userId).map {
+            mapOf(
+                "id" to it.id,
+                "username" to it.username,
+                "role" to it.role
+            )
+        }
+        return subscribers
+    }
+
+    @GetMapping("/trainers/{userId}")
+    fun getTrainers(@PathVariable userId: String): List<Map<String, String>> {
+        val trainers = courseService.getAllMyTrainers(userId).map {
+            mapOf(
+                "id" to it.id,
+                "username" to it.username,
+                "role" to it.role
+            )
+        }
+        return trainers
+    }
+
 
 
 

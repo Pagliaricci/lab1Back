@@ -15,7 +15,6 @@ class ChatService(
     private val userService: UserService
 ) {
     fun findOrCreateChat(user1Id: String, user2Id: String): ChatRoom {
-        println()
         return chatRoomRepository.findByUser1IdAndUser2Id(user1Id, user2Id)
             .orElseGet { chatRoomRepository.save(ChatRoom(user1Id = user1Id, user2Id = user2Id)) }
     }
@@ -31,14 +30,9 @@ class ChatService(
     }
 
     fun saveMessage(chatId: String,  senderId: String, text: String): Message {
-        println("saving message")
-        println("AAAAAAA")
-        println("chatId: $chatId")
         val chatRoom = chatRoomRepository.findById(UUID.fromString(chatId)).get()
         val recipientId = if (senderId == chatRoom.user1Id) chatRoom.user2Id else chatRoom.user1Id
-        println( "senderId: $senderId, recipientId: $recipientId, text: $text")
         val message = messageRepository.save(Message(chatRoom = chatRoom, senderId = senderId, recipientId = recipientId, content = text))
-        println("Message saved")
         return message
     }
 

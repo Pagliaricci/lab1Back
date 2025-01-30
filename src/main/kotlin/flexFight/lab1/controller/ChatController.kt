@@ -25,9 +25,6 @@ class ChatController(private val service: ChatService) {
     @PostMapping("/create")
     fun createChat(@RequestBody chatRequest: ChatRequest): ResponseEntity<String> {
         val chat =  service.findOrCreateChat(chatRequest.user1Id, chatRequest.user2Id)
-        println("EEEEEEU")
-        println(chat.id.toString())
-        println("a")
         return ResponseEntity.ok(chat.id.toString())
     }
 
@@ -41,9 +38,7 @@ class ChatController(private val service: ChatService) {
 
     @GetMapping("getChatRoom/{chatId}")
     fun getChatRoom(@PathVariable chatId: String): ResponseEntity<ChatRoom> {
-        println("chatId: $chatId")
         val chatRoom = service.getChatRoom(chatId)
-        println("chatRoom: $chatRoom")
         return ResponseEntity.ok(chatRoom)
     }
 

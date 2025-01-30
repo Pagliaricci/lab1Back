@@ -25,7 +25,6 @@ class ChatWebSocketHandler(private val chatService: ChatService) : TextWebSocket
         val text = payload[1]
         val senderId = session.uri?.query ?: return  // Obtener senderId desde la URL
 
-        println("Received message from $senderId in chat $chatId: $text")
 
         // 1️⃣ Guardar el mensaje en la base de datos
         val savedMessage = chatService.saveMessage(chatId, senderId, text)
