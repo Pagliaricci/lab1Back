@@ -42,6 +42,7 @@ data class SubscriberWithProgress(
 )
 
 data class ExerciseProgressWithDetails(
+    val historyExerciseId: String,
     val exerciseName: String,
     val sets: Int,
     val reps: Int,

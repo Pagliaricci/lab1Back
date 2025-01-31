@@ -215,5 +215,19 @@ class ProgressService(
         }
         }
 
+fun comment(comment: Comment): String? {
+    println("SDDSFDSFASDF")
+    println(comment.historyExerciseId)
+    val historyExerciseOptional = historyExerciseRepository.findById(comment.historyExerciseId)
+    if (historyExerciseOptional.isPresent) {
+        val historyExercise = historyExerciseOptional.get()
+        historyExercise.comment = comment.comment
+        historyExerciseRepository.saveAndFlush(historyExercise)
+        return "Comment added successfully"
+    } else {
+        return "Error: HistoryExercise not found"
+    }
+}
+
 
 }

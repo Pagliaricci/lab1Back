@@ -15,6 +15,7 @@ data class HistoryExercise(
     val reps: Int,
     val sets: Int,
     val date: Date = Date(),
+    var comment : String = ""
 )
 
 @Entity
@@ -115,4 +116,9 @@ data class UpdateProgressDate(
     val userId: String,
     val routineId: String,
     val date: Date
+)
+
+data class Comment(
+    val historyExerciseId: String,
+    val comment: String
 )

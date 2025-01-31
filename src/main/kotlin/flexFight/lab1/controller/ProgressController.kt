@@ -67,4 +67,10 @@ class ProgressController(private val progressService: ProgressService,private va
         return ResponseEntity.ok(response)
     }
 
+    @PostMapping("/comment")
+    fun comment(@RequestBody comment: Comment): ResponseEntity<String> {
+        val response = progressService.comment(comment)
+        return ResponseEntity.ok(response)
+    }
+
 }

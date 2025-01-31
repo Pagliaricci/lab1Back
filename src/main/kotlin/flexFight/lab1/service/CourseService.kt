@@ -168,7 +168,7 @@ class CourseService(
                 exercisesProgress = emptyList()
             )
         }
-        val exerciseProgress: List<ExerciseProgressWithDetails> = historyRepository.findByUserIdAndRoutineId(userId,routineId).map { exercise -> ExerciseProgressWithDetails(routineService.getExerciseName(exercise.exerciseId),exercise.sets,exercise.reps,exercise.weight,exercise.date)}
+        val exerciseProgress: List<ExerciseProgressWithDetails> = historyRepository.findByUserIdAndRoutineId(userId,routineId).map { exercise -> ExerciseProgressWithDetails(exercise.id, routineService.getExerciseName(exercise.exerciseId),exercise.sets,exercise.reps,exercise.weight,exercise.date)}
         return SubscriberWithProgress(
             userId = userId,
             username = userService.getUser(userId).username,
