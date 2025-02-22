@@ -1,15 +1,14 @@
 package flexFight.lab1.service
 
 import flexFight.lab1.entity.*
-import flexFight.lab1.repository.DaysTrainedObjectiveRepository
-import flexFight.lab1.repository.RMRepository
-import flexFight.lab1.repository.UserRepository
-import flexFight.lab1.repository.weightHistoryRepository
+import flexFight.lab1.repository.*
 import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class RMService(private val rmRepository: RMRepository, private val weightHistoryRepository: weightHistoryRepository, private val userRepository: UserRepository, private val daysTrainedObjectiveRepository: DaysTrainedObjectiveRepository) {
+class RMService(private val rmRepository: RMRepository, private val weightHistoryRepository: weightHistoryRepository, private val userRepository: UserRepository, private val daysTrainedObjectiveRepository: DaysTrainedObjectiveRepository,
+                private val recordRepository: RecordRepository
+) {
 
     fun setRM(rm: SetRM): Double {
         if (rm.reps <= 0) throw IllegalArgumentException("Reps must be greater than 0")
@@ -113,5 +112,19 @@ fun setDaysTrainedObjective(userId: String, objective: Int) {
 }
     fun getDaysTrainedObjective(userId: String): DaysTrainedObjective?{
         return daysTrainedObjectiveRepository.findByUserId(userId)
+    }
+
+    fun setObjectiveRecord(userId: String,  date: String, objectiveName:String, objectiveValue:Double, currentValue:Double) {
+        userRepository.findById(userId).orElseThrow { IllegalArgumentException("User not found") }
+        recordRepository.findByUserIdAndObjectiveValue(userId, objectiveValue)?.let {
+            it.currentValue = currentValue
+            recordRepository.save(it)
+            return
+        }
+        val objectiveRecord = ObjRecord(userId = userId, date = date, objectiveName = objectiveName, objectiveValue = objectiveValue, currentValue = currentValue)
+        recordRepository.save(objectiveRecord)
+    }
+    fun getAllUserObjectiveRecords(userId: String): List<ObjRecord> {
+        return recordRepository.findAllByUserIdOrderByDateDesc(userId)
     }
 }

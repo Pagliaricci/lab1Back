@@ -184,4 +184,38 @@ class RMController(private val rmService: RMService){
         ResponseEntity.badRequest().build()
        }
    }
+
+    @PostMapping("/set-objective-record")
+    fun setObjectiveRecord(@RequestBody request: Map<String, Any>): ResponseEntity<String> {
+        val userId = request["userId"] as? String
+        val date = request["date"] as? String
+        val objectiveName = request["objectiveName"] as? String
+        val objectiveValue = request["objectiveValue"] as? String
+        val currentValue = request["currentValue"] as? String
+        println(userId)
+        println(date)
+        println(objectiveName)
+        println(objectiveValue)
+        println(currentValue)
+        if (userId.isNullOrEmpty() || date.isNullOrEmpty() || objectiveName.isNullOrEmpty() || objectiveValue == null || currentValue == null) {
+            return ResponseEntity.badRequest().body("Invalid request parameters")
+        }
+
+        return try {
+            rmService.setObjectiveRecord(userId, date, objectiveName, objectiveValue.toDouble(), currentValue.toDouble())
+            ResponseEntity.ok("Objective record set successfully")
+        } catch (e: Exception) {
+            ResponseEntity.badRequest().body("Failed to set objective record")
+        }
+    }
+
+    @GetMapping("/getAll-objective-record")
+    fun getAllObjectiveRecord(@RequestParam userId: String): ResponseEntity<List<ObjRecord>> {
+        return try {
+            val objectiveRecord = rmService.getAllUserObjectiveRecords(userId)
+            ResponseEntity.ok(objectiveRecord)
+        } catch (e: Exception) {
+            ResponseEntity.badRequest().build()
+        }
+    }
 }
