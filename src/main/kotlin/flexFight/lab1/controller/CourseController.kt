@@ -51,4 +51,10 @@ class CourseController(private val courseService: CourseService) {
     fun searchCourses(@RequestParam query: String): List<FullRoutine> {
         return courseService.searchCourses(query)
     }
+
+    @GetMapping("/{routineId}/historySubscriptions")
+    fun getHistorySubscriptions(@PathVariable routineId: String): List<SubscriberHistoryWithName> {
+        val list = courseService.getHistorySubscriptions(routineId)
+        return list
+    }
 }

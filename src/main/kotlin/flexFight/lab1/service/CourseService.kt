@@ -2,6 +2,7 @@ package flexFight.lab1.service
 
 import flexFight.lab1.entity.*
 import flexFight.lab1.repository.HistoryExerciseRepository
+import flexFight.lab1.repository.HistorySubscriptionRepository
 import flexFight.lab1.repository.SubscriptionRepository
 import org.springframework.stereotype.Service
 import java.util.*
@@ -13,6 +14,7 @@ class CourseService(
     private val progressService: ProgressService,
     private val subscriptionRepository: SubscriptionRepository,
     private val historyRepository: HistoryExerciseRepository,
+    private val historySubscriptionRepository: HistorySubscriptionRepository
 
     ) {
 
@@ -70,6 +72,11 @@ class CourseService(
             userId = user.id,
             routineId = routine.id,
         )
+        historySubscriptionRepository.saveAndFlush(HistorySubscription(
+            id = UUID.randomUUID().toString(),
+            userId = user.id,
+            routineId = routine.id
+        ))
         return subscriptionRepository.saveAndFlush(subscription)
     }
 
@@ -198,5 +205,16 @@ fun getAllMySubscribers(trainerId: String): List<User> {
         val trainers = courses.map { userService.getUser(it.creator) }
         println(trainers)
         return trainers
+    }
+
+    fun getHistorySubscriptions(routineId: String): List<SubscriberHistoryWithName> {
+        val subs = historySubscriptionRepository.findByRoutineId(routineId)
+        return subs.map { SubscriberHistoryWithName(
+            it.id,
+            username = userService.getUser(it.userId).username,
+            it.routineId,
+            it.date.date.toString() + "/" + it.date.month.toString() + "/" + "2025"
+        )
+        }
     }
 }

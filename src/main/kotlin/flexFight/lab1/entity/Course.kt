@@ -32,6 +32,12 @@ data class SubscriberWithName(
     val progress: RoutineProgress?,
     val realizedExercises: List<HistoryExercise>
 )
+data class SubscriberHistoryWithName(
+    val id: String,
+    val username: String,
+    val routineId: String,
+    val subscriptionDate: String
+)
 
 data class SubscriberWithProgress(
     val userId: String,
@@ -48,4 +54,13 @@ data class ExerciseProgressWithDetails(
     val reps: Int,
     val weight: Int,
     val date: Date
+)
+
+@Entity
+data class HistorySubscription(
+    @Id
+    val id: String = UUID.randomUUID().toString(),
+    val userId: String,
+    val routineId: String,
+    val date: Date = Date()
 )
