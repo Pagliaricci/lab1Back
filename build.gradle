@@ -17,6 +17,9 @@ java {
 
 repositories {
 	mavenCentral()
+	maven { url 'https://jitpack.io' } // Add JitPack repository
+	maven { url = uri("https://oss.sonatype.org/content/repositories/public/") }
+
 }
 
 dependencies {
@@ -32,12 +35,17 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
-
+	implementation 'org.sonatype.sisu:sisu-guice:3.2.6'
 }
-
 kotlin {
 	compilerOptions {
 		freeCompilerArgs.addAll '-Xjsr305=strict'
+	}
+}
+
+configurations.all {
+	resolutionStrategy {
+		force 'com.google.guava:guava:33.3.1-jre'
 	}
 }
 
