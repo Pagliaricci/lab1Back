@@ -35,8 +35,15 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
-	implementation 'org.sonatype.sisu:sisu-guice:3.2.6'
+	implementation('org.sonatype.sisu:sisu-guice:3.2.6') {
+		exclude group: 'com.google.guava', module: 'guava'
+	}
+
+	implementation('com.mercadopago:sdk-java:2.1.10') {
+		exclude group: 'com.google.collections', module: 'google-collections'
+	}
 }
+
 kotlin {
 	compilerOptions {
 		freeCompilerArgs.addAll '-Xjsr305=strict'

@@ -59,6 +59,7 @@ class CourseService(
     }
 
     fun subscribeToCourse(addSubscriber: AddSubscriber): Subscription {
+        println("AAAAAAAAA")
         val routine = routineService.getRoutine(addSubscriber.routineId)
         val user = userService.getUser(addSubscriber.userId)
         // Check if already subscribed

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="flexFight.lab1.Lab1ApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-03-11T14:34:02" hostname="Pablos-MacBook-Air.local" time="0.249">
+<testsuite name="flexFight.lab1.Lab1ApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-04-15T13:59:11" hostname="Pablos-MacBook-Air.local" time="0.265">
   <properties/>
-  <testcase name="contextLoads()" classname="flexFight.lab1.Lab1ApplicationTests" time="0.249"/>
-  <system-out><![CDATA[11:34:00.177 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [flexFight.lab1.Lab1ApplicationTests]: Lab1ApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-11:34:00.214 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration flexFight.lab1.Lab1Application for test class flexFight.lab1.Lab1ApplicationTests
+  <testcase name="contextLoads()" classname="flexFight.lab1.Lab1ApplicationTests" time="0.265"/>
+  <system-out><![CDATA[10:59:09.479 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [flexFight.lab1.Lab1ApplicationTests]: Lab1ApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+10:59:09.516 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration flexFight.lab1.Lab1Application for test class flexFight.lab1.Lab1ApplicationTests
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -14,19 +14,19 @@
 
  :: Spring Boot ::                (v3.4.1)
 
-2025-03-11T11:34:00.339-03:00  INFO 6825 --- [lab1] [    Test worker] flexFight.lab1.Lab1ApplicationTests      : Starting Lab1ApplicationTests using Java 21.0.5 with PID 6825 (started by pablopagliaricci in /Users/pablopagliaricci/projects/lab1/lab1Back)
-2025-03-11T11:34:00.340-03:00  INFO 6825 --- [lab1] [    Test worker] flexFight.lab1.Lab1ApplicationTests      : No active profile set, falling back to 1 default profile: "default"
-2025-03-11T11:34:00.557-03:00  INFO 6825 --- [lab1] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-03-11T11:34:00.586-03:00  INFO 6825 --- [lab1] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 26 ms. Found 16 JPA repository interfaces.
-2025-03-11T11:34:00.728-03:00  INFO 6825 --- [lab1] [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-03-11T11:34:00.745-03:00  INFO 6825 --- [lab1] [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.4.Final
-2025-03-11T11:34:00.755-03:00  INFO 6825 --- [lab1] [    Test worker] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-03-11T11:34:00.836-03:00  INFO 6825 --- [lab1] [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-03-11T11:34:00.845-03:00  INFO 6825 --- [lab1] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-03-11T11:34:00.920-03:00  INFO 6825 --- [lab1] [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@14df5253
-2025-03-11T11:34:00.921-03:00  INFO 6825 --- [lab1] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-03-11T11:34:00.933-03:00  WARN 6825 --- [lab1] [    Test worker] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-03-11T11:34:00.940-03:00  INFO 6825 --- [lab1] [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2025-04-15T10:59:09.651-03:00  INFO 3597 --- [lab1] [    Test worker] flexFight.lab1.Lab1ApplicationTests      : Starting Lab1ApplicationTests using Java 21.0.5 with PID 3597 (started by pablopagliaricci in /Users/pablopagliaricci/projects/lab1/lab1Back)
+2025-04-15T10:59:09.652-03:00  INFO 3597 --- [lab1] [    Test worker] flexFight.lab1.Lab1ApplicationTests      : No active profile set, falling back to 1 default profile: "default"
+2025-04-15T10:59:09.866-03:00  INFO 3597 --- [lab1] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-04-15T10:59:09.899-03:00  INFO 3597 --- [lab1] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 27 ms. Found 16 JPA repository interfaces.
+2025-04-15T10:59:10.053-03:00  INFO 3597 --- [lab1] [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-04-15T10:59:10.070-03:00  INFO 3597 --- [lab1] [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.4.Final
+2025-04-15T10:59:10.079-03:00  INFO 3597 --- [lab1] [    Test worker] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-04-15T10:59:10.162-03:00  INFO 3597 --- [lab1] [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-04-15T10:59:10.172-03:00  INFO 3597 --- [lab1] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-04-15T10:59:10.261-03:00  INFO 3597 --- [lab1] [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@137a4b54
+2025-04-15T10:59:10.261-03:00  INFO 3597 --- [lab1] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-04-15T10:59:10.284-03:00  WARN 3597 --- [lab1] [    Test worker] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-04-15T10:59:10.291-03:00  INFO 3597 --- [lab1] [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
 	Database driver: undefined/unknown
 	Database version: 17.2
@@ -34,11 +34,11 @@
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2025-03-11T11:34:01.300-03:00  INFO 6825 --- [lab1] [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-03-11T11:34:01.362-03:00  INFO 6825 --- [lab1] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-03-11T11:34:01.673-03:00  INFO 6825 --- [lab1] [    Test worker] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-03-11T11:34:01.943-03:00  WARN 6825 --- [lab1] [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-03-11T11:34:02.116-03:00  INFO 6825 --- [lab1] [    Test worker] flexFight.lab1.Lab1ApplicationTests      : Started Lab1ApplicationTests in 1.855 seconds (process running for 2.252)
+2025-04-15T10:59:10.661-03:00  INFO 3597 --- [lab1] [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-04-15T10:59:10.727-03:00  INFO 3597 --- [lab1] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-04-15T10:59:11.023-03:00  INFO 3597 --- [lab1] [    Test worker] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-04-15T10:59:11.277-03:00  WARN 3597 --- [lab1] [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-04-15T10:59:11.456-03:00  INFO 3597 --- [lab1] [    Test worker] flexFight.lab1.Lab1ApplicationTests      : Started Lab1ApplicationTests in 1.897 seconds (process running for 2.295)
 ]]></system-out>
   <system-err><![CDATA[Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build what is described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#0.3
 WARNING: A Java agent has been loaded dynamically (/Users/pablopagliaricci/.gradle/caches/modules-2/files-2.1/net.bytebuddy/byte-buddy-agent/1.15.11/a38b16385e867f59a641330f0362ebe742788ed8/byte-buddy-agent-1.15.11.jar)
