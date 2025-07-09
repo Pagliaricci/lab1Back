@@ -6,6 +6,7 @@ import com.mercadopago.client.preference.PreferenceClient
 import com.mercadopago.client.preference.PreferenceItemRequest
 import com.mercadopago.client.preference.PreferenceRequest
 import com.mercadopago.resources.preference.Preference
+import flexFight.lab1.controller.CrearPagoRequest
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 
@@ -16,11 +17,11 @@ class PaymentService {
         MercadoPagoConfig.setAccessToken("") // Tu token de prueba
     }
 
-    fun crearPreferencia(titulo: String, precio: Double): Preference {
+    fun crearPreferencia(request: CrearPagoRequest): Preference {
         val item = PreferenceItemRequest.builder()
-            .title(titulo)
+            .title(request.titulo)
             .quantity(1)
-            .unitPrice(BigDecimal.valueOf(precio))
+            .unitPrice(BigDecimal.valueOf(request.precio))
             .currencyId("ARS")
             .build()
 
@@ -30,10 +31,16 @@ class PaymentService {
             .pending("http://localhost:5173/checkout-pending")
             .build()
 
+        val metadata = mapOf(
+            "userId" to request.userId,
+            "courseId" to request.courseId,
+        )
+
         val preferenceRequest = PreferenceRequest.builder()
             .items(listOf(item))
             .backUrls(backUrls)
             .autoReturn("approved")
+            .metadata(metadata)
             .build()
 
         val client = PreferenceClient()
