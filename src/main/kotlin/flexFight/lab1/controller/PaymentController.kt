@@ -1,58 +1,56 @@
 package flexFight.lab1.controller
 
-import com.mercadopago.client.payment.PaymentClient
-import flexFight.lab1.entity.AddSubscriber
-import flexFight.lab1.service.CourseService
-import flexFight.lab1.service.PaymentService
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.*
 import org.springframework.web.bind.annotation.*
-import org.springframework.http.ResponseEntity
-
+import org.springframework.web.client.RestTemplate
+import org.springframework.web.util.UriComponentsBuilder
 
 @RestController
 @RequestMapping("/api/pagos")
-class PaymentController(
-    private val paymentService: PaymentService,
-    private val courseService: CourseService
+class PagoController(
+    @Value("\${mercadopago.access-token}") val accessToken: String
 ) {
+    val restTemplate = RestTemplate()
 
-    @PostMapping("/crear")
-    fun crearPago(@RequestBody request: CrearPagoRequest): ResponseEntity<Map<String, String>> {
-        println("LLEGUE")
-        val preference = paymentService.crearPreferencia(request)
-        return ResponseEntity.ok(mapOf("preferenceId" to preference.id))
-    }
+    @PostMapping("/preferencia")
+    fun crearPreferencia(@RequestParam courseId: String, @RequestParam precio: Double,  @RequestParam userId: String): ResponseEntity<MercadoPagoPreferenceResponse> {
+        val url = UriComponentsBuilder
+            .fromHttpUrl("https://api.mercadopago.com/checkout/preferences")
+            .queryParam("access_token", accessToken)
+            .toUriString()
 
-    @PostMapping("/webhook")
-    fun recibirWebhook(@RequestBody payload: Map<String, Any>): ResponseEntity<Void> {
-        val type = payload["type"] as? String
-        val data = payload["data"] as? Map<*, *>
-        val paymentId = data?.get("id")?.toString()
+        val body = mapOf(
+            "items" to listOf(
+                mapOf(
+                    "title" to courseId,
+                    "quantity" to 1,
+                    "unit_price" to precio,
+                    "currency_id" to "ARS"
+                )
+            ),
+            "back_urls" to mapOf(
+                "success" to "https://lab1-redirect.vercel.app?courseId=$courseId&userId=$userId",
+                "success" to "https://lab1-redirect.vercel.app?courseId=$courseId&userId=$userId",
+                "success" to "https://lab1-redirect.vercel.app?courseId=$courseId&userId=$userId"
+            ),
+            "auto_return" to "approved"
+        )
 
-        if (type == "payment" && paymentId != null) {
-            // Buscar el pago con la API de Mercado Pago para verificar estado
-            val client = PaymentClient()
-            val payment = client.get(paymentId.toLong())
-
-            if (payment.status == "approved") {
-                val metadata = payment.metadata
-
-                val userId = metadata["userId"]?.toString()
-                val courseId = metadata["courseId"]?.toString()
-
-                if (userId != null && courseId != null) {
-                    courseService.subscribeToCourse(AddSubscriber(userId, courseId))
-                }
-            }
+        val headers = HttpHeaders().apply {
+            contentType = MediaType.APPLICATION_JSON
         }
 
-        return ResponseEntity.ok().build()
+        val request = HttpEntity(body, headers)
+
+        val response = restTemplate.postForEntity(url, request, Map::class.java)
+        val initPoint = response.body?.get("init_point") as? String
+            ?: return ResponseEntity.internalServerError().build()
+
+        return ResponseEntity.ok(MercadoPagoPreferenceResponse(init_point = initPoint))
     }
 
+    data class MercadoPagoPreferenceResponse(
+        val init_point: String
+    )
 }
-
-data class CrearPagoRequest(
-    val titulo: String,
-    val precio: Double,
-    val userId: String,
-    val courseId: String
-)
