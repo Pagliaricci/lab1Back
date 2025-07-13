@@ -44,6 +44,26 @@ class RoutineService(
         return routine
     }
 
+    @Transactional
+    fun removeRoutineForUser(routineId: String, userId: String) {
+        // Primero verificamos si la rutina fue creada por el usuario
+        val routine = routineRepository.findById(routineId).orElse(null)
+        
+        if (routine != null && routine.creator == userId) {
+            // Si el usuario es el creador, eliminamos la rutina completamente
+            // Primero eliminamos todas las dependencias
+            deleteRoutineProgress(routineId, userId)
+            routineExerciseRepository.deleteAllByRoutineId(routineId)
+            subscriptionRepository.deleteByRoutineId(routineId)
+            // Finalmente eliminamos la rutina
+            routineRepository.deleteById(routineId)
+        } else {
+            // Si no es el creador, solo eliminamos la suscripción
+            deleteRoutineProgress(routineId, userId)
+            subscriptionRepository.deleteByUserIdAndRoutineId(userId, routineId)
+        }
+    }
+
     fun getRoutineExercises(routineId: String): List<RoutineExercise> {
         return routineExerciseRepository.findByRoutineId(routineId)
     }

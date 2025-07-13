@@ -59,6 +59,12 @@ class RoutineController(
         return ResponseEntity.ok("Routine deleted successfully")
     }
 
+    @DeleteMapping("/remove/{routineId}")
+    fun removeRoutine(@PathVariable routineId: String, @RequestParam userId: String): ResponseEntity<String> {
+        routineService.removeRoutineForUser(routineId, userId)
+        return ResponseEntity.ok("Routine removed successfully")
+    }
+
     @PostMapping("/rate")
     fun rateRoutine(@RequestBody rateRoutine: RateRoutine): ResponseEntity<String> {
         routineService.rateRoutine(rateRoutine)

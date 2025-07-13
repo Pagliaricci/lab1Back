@@ -14,6 +14,9 @@ interface SubscriptionRepository : JpaRepository<Subscription, String> {
     @Modifying
     @Transactional
     fun deleteByUserIdAndRoutineId(userId: String, routineId: String)
+    @Modifying
+    @Transactional
+    fun deleteByRoutineId(routineId: String)
     fun findAllByRoutineId(trainerId: String): List<Subscription>
     fun findAllByUserId(userId: String): List<Subscription>
 
