@@ -62,7 +62,7 @@ class ProgressController(private val progressService: ProgressService,private va
     }
 
     @PostMapping("/update-progress-day")
-    fun updateProgressDay(@RequestBody updateProgress: UpdateProgressDate): ResponseEntity<RoutineProgress?> {
+    fun updateProgressDay(@RequestBody updateProgress: UpdateProgressDate): ResponseEntity<RoutineProgressDTO?> {
         val response = progressService.updateProgressDay(updateProgress)
         return ResponseEntity.ok(response)
     }

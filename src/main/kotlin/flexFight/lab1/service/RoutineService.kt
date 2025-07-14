@@ -244,4 +244,8 @@ fun getRoutines(userID: String): Array<Routine> {
         return routineExerciseRepository.findById(id).get().exercise.name
     }
 
+    fun getRoutineById(id: String): Routine? {
+        return routineRepository.findById(id).orElse(null)
+    }
+
 }

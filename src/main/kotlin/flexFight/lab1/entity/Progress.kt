@@ -122,3 +122,14 @@ data class Comment(
     val historyExerciseId: String,
     val comment: String
 )
+
+data class RoutineProgressDTO(
+    val id: String,
+    val userId: String,
+    val routineId: String,
+    val day: Int,
+    val amountOfExercisesDone: Int,
+    val initiationDate: Date,
+    val lastUpdated: Date,
+    val duration: Int
+)

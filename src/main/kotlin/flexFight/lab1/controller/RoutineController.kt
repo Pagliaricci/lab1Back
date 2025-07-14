@@ -70,5 +70,10 @@ class RoutineController(
         routineService.rateRoutine(rateRoutine)
         return ResponseEntity.ok("Routine rated successfully")
     }
-}
 
+    @GetMapping("/{id}")
+    fun getRoutineById(@PathVariable id: String): ResponseEntity<Routine?> {
+        val routine = routineService.getRoutineById(id)
+        return ResponseEntity.ok(routine)
+    }
+}

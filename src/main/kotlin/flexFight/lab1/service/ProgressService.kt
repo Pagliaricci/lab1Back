@@ -14,7 +14,8 @@ class ProgressService(
     private val routineExerciseRepository: RoutineExerciseRepository,
     private val historyExerciseService: HistoryExerciseService,
     private val subscriptionRepository: SubscriptionRepository,
-    private val historyExerciseRepository: HistoryExerciseRepository
+    private val historyExerciseRepository: HistoryExerciseRepository,
+    private val routineRepository: RoutineRepository // Add routineRepository here
 ) {
 
     fun startRoutine(startRoutine: StartRoutine): String {
@@ -197,7 +198,7 @@ class ProgressService(
             }
         }
 
-    fun updateProgressDay(updateProgressDate: UpdateProgressDate): RoutineProgress? {
+    fun updateProgressDay(updateProgressDate: UpdateProgressDate): RoutineProgressDTO? {
         try {
             val progress = progressRepository.findByUserIdAndRoutineId(updateProgressDate.userId, updateProgressDate.routineId)
             if (progress != null) {
@@ -205,15 +206,25 @@ class ProgressService(
                 progress.day += daysDifference.toInt()
                 progress.lastUpdated = updateProgressDate.date
                 progressRepository.saveAndFlush(progress)
-                return progress
-            }
-            else {
-                return null
+                // Fetch duration from Routine
+                val routine = routineRepository.findById(progress.routineId).orElse(null)
+                val duration = routine?.duration ?: 0
+                return RoutineProgressDTO(
+                    id = progress.id,
+                    userId = progress.userId,
+                    routineId = progress.routineId,
+                    day = progress.day,
+                    amountOfExercisesDone = progress.amountOfExercisesDone,
+                    initiationDate = progress.initiationDate,
+                    lastUpdated = progress.lastUpdated,
+                    duration = duration
+                )
             }
         } catch (e: Exception) {
             return null
         }
-        }
+        return null
+    }
 
 fun comment(comment: Comment): String? {
     println("SDDSFDSFASDF")
