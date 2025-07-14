@@ -72,8 +72,8 @@ class RoutineController(
     }
 
     @GetMapping("/{id}")
-    fun getRoutineById(@PathVariable id: String): ResponseEntity<Routine?> {
-        val routine = routineService.getRoutineById(id)
+    fun getRoutineById(@PathVariable id: String): ResponseEntity<FullRoutine?> {
+        val routine = routineService.getFullRoutineById(id)
         return ResponseEntity.ok(routine)
     }
 }

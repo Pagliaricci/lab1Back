@@ -248,4 +248,33 @@ fun getRoutines(userID: String): Array<Routine> {
         return routineRepository.findById(id).orElse(null)
     }
 
+    fun getFullRoutineById(id: String): FullRoutine? {
+        val routine = routineRepository.findById(id).orElse(null) ?: return null
+        val routineExercises = routineExerciseRepository.findByRoutineId(routine.id)
+        val fullRoutineExercises = routineExercises.map { routineExercise ->
+            FullRoutineExercise(
+                name = routineExercise.exercise.name,
+                description = routineExercise.exercise.description,
+                category = routineExercise.exercise.category,
+                routine = routineExercise.routine,
+                id = routineExercise.id,
+                sets = routineExercise.sets,
+                reps = routineExercise.reps,
+                day = routineExercise.day
+            )
+        }
+        return FullRoutine(
+            id = routine.id,
+            name = routine.name,
+            duration = routine.duration,
+            intensity = routine.intensity,
+            price = routine.price,
+            creator = routine.creator,
+            isActive = routine.isActive,
+            createdAt = routine.createdAt,
+            exercises = fullRoutineExercises,
+            rating = routine.rating
+        )
+    }
+
 }
