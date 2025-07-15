@@ -59,10 +59,10 @@ class HistoryExerciseService(
     }
 
     fun getExerciseName(exerciseId: String): String {
-        val routineExercise = routineExerciseRepository.findById(exerciseId).get()
-    return routineExercise.exercise.name
+        val routineExerciseOpt = routineExerciseRepository.findById(exerciseId)
+        return routineExerciseOpt.map { it.exercise.name }.orElse("Unknown Exercise")
     }
     private fun getRoutineName(routineId: String): String {
-        return routineRepository.findById(routineId).get().name
+        return routineRepository.findById(routineId).map { it.name }.orElse("Unknown Routine")
     }
 }

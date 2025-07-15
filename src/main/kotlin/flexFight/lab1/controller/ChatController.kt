@@ -6,6 +6,7 @@ import flexFight.lab1.entity.MessageWithChatId
 import flexFight.lab1.service.ChatService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.lang.System.console
 
 @RestController
 @RequestMapping("/chats")
@@ -33,6 +34,7 @@ class ChatController(private val service: ChatService) {
     @GetMapping("getMessages/{chatId}")
     fun getMessages(@PathVariable chatId: String): List<MessageWithChatId> {
         val messages = service.getChatMessages(chatId)
+        println(messages)
         return messages.map { MessageWithChatId(it.id.toString(),it.chatRoom.id.toString(), message = it.content, it.senderId,it.recipientId, timestamp = it.timestamp ) }
     }
 

@@ -18,13 +18,13 @@ class ChatWebSocketHandler(private val chatService: ChatService) : TextWebSocket
     }
 
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
-        val payload = message.payload.split(":") // Ejemplo de mensaje: "chatId:contenido"
-        if (payload.size < 2) return
+        val payload = message.payload
+        val sepIndex = payload.indexOf(":")
+        if (sepIndex == -1) return
 
-        val chatId = payload[0]
-        val text = payload[1]
+        val chatId = payload.substring(0, sepIndex)
+        val text = payload.substring(sepIndex + 1)
         val senderId = session.uri?.query ?: return  // Obtener senderId desde la URL
-
 
         // 1️⃣ Guardar el mensaje en la base de datos
         val savedMessage = chatService.saveMessage(chatId, senderId, text)
