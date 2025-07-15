@@ -1,14 +1,17 @@
 package flexFight.lab1.handler
 
-import flexFight.lab1.entity.Message
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import flexFight.lab1.service.ChatService
+import org.springframework.stereotype.Component
 import org.springframework.web.socket.*
 import org.springframework.web.socket.handler.TextWebSocketHandler
-import org.springframework.stereotype.Component
 
 @Component
 class ChatWebSocketHandler(private val chatService: ChatService) : TextWebSocketHandler() {
+
     private val sessions = mutableMapOf<String, WebSocketSession>()
+    private val mapper = jacksonObjectMapper()
 
     override fun afterConnectionEstablished(session: WebSocketSession) {
         val userId = session.uri?.query // Obtener userID desde la URL
@@ -18,27 +21,32 @@ class ChatWebSocketHandler(private val chatService: ChatService) : TextWebSocket
     }
 
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
-        val payload = message.payload
-        val sepIndex = payload.indexOf(":")
-        if (sepIndex == -1) return
+        try {
+            val payload = message.payload
+            val received = mapper.readValue<IncomingMessage>(payload)
+            val senderId = session.uri?.query ?: return
 
-        val chatId = payload.substring(0, sepIndex)
-        val text = payload.substring(sepIndex + 1)
-        val senderId = session.uri?.query ?: return  // Obtener senderId desde la URL
+            // Guardar el mensaje en base de datos
+            val savedMessage = chatService.saveMessage(received.chatId, senderId, received.content)
 
-        // 1️⃣ Guardar el mensaje en la base de datos
-        val savedMessage = chatService.saveMessage(chatId, senderId, text)
+            val outgoing = OutgoingMessage(savedMessage.senderId, savedMessage.content)
 
-        // 2️⃣ Reenviar mensaje al destinatario
-        sessions.forEach { (userId, userSession) ->
-            if (userSession.isOpen) {
-                userSession.sendMessage(TextMessage("${savedMessage.senderId}:${savedMessage.content}"))
+            // Reenviar mensaje a todos los usuarios conectados
+            val jsonMessage = mapper.writeValueAsString(outgoing)
+            sessions.forEach { (_, userSession) ->
+                if (userSession.isOpen) {
+                    userSession.sendMessage(TextMessage(jsonMessage))
+                }
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-
     }
 
     override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
         sessions.values.remove(session)
     }
+
+    data class IncomingMessage(val chatId: String, val content: String)
+    data class OutgoingMessage(val senderId: String, val content: String)
 }
